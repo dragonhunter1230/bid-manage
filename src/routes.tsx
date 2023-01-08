@@ -4,7 +4,7 @@ import {
   MdPerson,
   MdHome,
   MdLock,
-  MdOutlineShoppingCart
+  MdOutlinePeople
 } from 'react-icons/md'
 
 // Admin Imports
@@ -49,10 +49,24 @@ const routes: IRoute[] = [
     component: DataTables
   },
   {
+    name: 'Member Manage',
+    layout: '/admin',
+    icon: <Icon as={MdOutlinePeople} width='20px' height='20px' color='inherit' />,
+    path: '/user-manage',
+    component: DataTables
+  },
+  {
     name: 'BID Stastics',
     layout: '/admin',
     icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
     path: '/bid-stastics',
+    component: DataTables
+  },
+  {
+    name: 'Chat Stastics',
+    layout: '/admin',
+    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
+    path: '/chat-stastics',
     component: DataTables
   },
   // {

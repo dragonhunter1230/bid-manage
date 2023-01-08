@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 // Chakra imports
 import {
@@ -25,10 +25,13 @@ import {
 } from 'views/admin/bidStastics/variables/columnsData'
 import tableDataBID from 'views/admin/bidStastics/variables/tableDataBID.json'
 import MiniCalendar from 'components/calendar/MiniCalendar'
+import { isEmpty } from '@chakra-ui/utils'
 export default function NftMarketplace() {
   // Chakra Color Mode
   const textColor = useColorModeValue('secondaryGray.900', 'white')
   const textColorBrand = useColorModeValue('brand.500', 'white')
+  const [selectUser, setSelectUser] = useState('');
+  const [selectClient, setSelectClient] = useState('');
   return (
     <AdminLayout>
       <Box pt={{ base: '180px', md: '80px', xl: '80px' }}>
@@ -43,24 +46,42 @@ export default function NftMarketplace() {
             flexDirection='column'
             gridArea={{ xl: '1 / 1 / 4 / 2' }}
           >
-            <MiniCalendar h='100%' minW='100%' selectRange={false} />
-            <Card mt='20px' mb='20px'>
+            <Card mb='20px'>
               <TeamMemmbers
                 tableData={(tableDataTeamMembers as unknown) as TableData[]}
                 columnsData={tableColumnsTeamMembers}
-                cardTitle={'Team members'}
+                cardTitle={'Team Members'}
+                setFilter={setSelectUser}
               />
             </Card>
+            {
+              !isEmpty(selectUser) ?
+                <Card>
+                  <TeamMemmbers
+                    tableData={(tableDataTeamMembers as unknown) as TableData[]}
+                    columnsData={tableColumnsTeamMembers}
+                    cardTitle={`${selectUser}'s Client`}
+                    setFilter={setSelectClient}
+                  />
+                </Card>
+                :
+                null
+            }
           </Flex>
           <Flex
             flexDirection='column'
             gridArea={{ xl: '1 / 2 / 4 / 5' }}
           >
-            <ColumnsTableBID
-              columnsData={columnsDataBID}
-              tableData={(tableDataBID as unknown) as TableData[]}
-              cardTitle={`Today's BID Table`}
-            />
+            {
+              !isEmpty(selectClient) ? <ColumnsTableBID
+                columnsData={columnsDataBID}
+                tableData={(tableDataBID as unknown) as TableData[]}
+                cardTitle={`Chat History between ${selectUser} & ${selectClient}`}
+              />
+                :
+                null
+            }
+
           </Flex>
         </Grid>
         {/* Delete Product */}

@@ -53,4 +53,6 @@ export type TableData = Column<{
 export type TableProps = {
   columnsData: ColumnData;
   tableData: TableData[];
+  cardTitle?: string;
+  setFilter?: () => void;
 };

@@ -1,0 +1,26 @@
+[
+  {
+    "username":"Kanggyongmyong",
+    "work": 2458, 
+    "subTeam": "9-1",
+    "birthday": "21.Feb.2021" 
+  },
+  {
+    "username":"Rijinguk",
+    "work": 1485, 
+    "subTeam": "9-2",
+    "birthday": "21.Feb.2021"  
+  },
+  {
+    "username":"Paekgumsu",
+    "work": 1024, 
+    "subTeam": "9-2",
+    "birthday": "21.Feb.2021" 
+  },
+  {
+    "username":"Kimcholhun",
+    "work": 858, 
+    "subTeam": "9-3",
+    "birthday": "21.Feb.2021" 
+  }
+]
