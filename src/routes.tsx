@@ -4,7 +4,7 @@ import {
   MdPerson,
   MdHome,
   MdLock,
-  MdOutlineShoppingCart
+  MdOutlinePeople
 } from 'react-icons/md'
 
 // Admin Imports
@@ -26,21 +26,21 @@ const routes: IRoute[] = [
     icon: <Icon as={MdHome} width='20px' height='20px' color='inherit' />,
     component: MainDashboard
   },
-  {
-    name: 'NFT Marketplace',
-    layout: '/admin',
-    path: '/nft-marketplace',
-    icon: (
-      <Icon
-        as={MdOutlineShoppingCart}
-        width='20px'
-        height='20px'
-        color='inherit'
-      />
-    ),
-    component: NFTMarketplace,
-    secondary: true
-  },
+  // {
+  //   name: 'NFT Marketplace',
+  //   layout: '/admin',
+  //   path: '/nft-marketplace',
+  //   icon: (
+  //     <Icon
+  //       as={MdOutlineShoppingCart}
+  //       width='20px'
+  //       height='20px'
+  //       color='inherit'
+  //     />
+  //   ),
+  //   component: NFTMarketplace,
+  //   secondary: true
+  // },
   {
     name: 'Data Tables',
     layout: '/admin',
@@ -49,12 +49,33 @@ const routes: IRoute[] = [
     component: DataTables
   },
   {
-    name: 'Profile',
+    name: 'Member Manage',
     layout: '/admin',
-    path: '/profile',
-    icon: <Icon as={MdPerson} width='20px' height='20px' color='inherit' />,
-    component: Profile
+    icon: <Icon as={MdOutlinePeople} width='20px' height='20px' color='inherit' />,
+    path: '/user-manage',
+    component: DataTables
   },
+  {
+    name: 'BID Stastics',
+    layout: '/admin',
+    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
+    path: '/bid-stastics',
+    component: DataTables
+  },
+  {
+    name: 'Chat Stastics',
+    layout: '/admin',
+    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
+    path: '/chat-stastics',
+    component: DataTables
+  },
+  // {
+  //   name: 'Profile',
+  //   layout: '/admin',
+  //   path: '/profile',
+  //   icon: <Icon as={MdPerson} width='20px' height='20px' color='inherit' />,
+  //   component: Profile
+  // },
   {
     name: 'Sign In',
     layout: '/auth',
@@ -62,13 +83,13 @@ const routes: IRoute[] = [
     icon: <Icon as={MdLock} width='20px' height='20px' color='inherit' />,
     component: SignInCentered
   },
-  {
-    name: 'RTL Admin',
-    layout: '/rtl',
-    path: '/rtl-default',
-    icon: <Icon as={MdHome} width='20px' height='20px' color='inherit' />,
-    component: RTL
-  }
+  // {
+  //   name: 'RTL Admin',
+  //   layout: '/rtl',
+  //   path: '/rtl-default',
+  //   icon: <Icon as={MdHome} width='20px' height='20px' color='inherit' />,
+  //   component: RTL
+  // }
 ]
 
 export default routes

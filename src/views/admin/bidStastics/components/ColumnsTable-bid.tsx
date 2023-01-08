@@ -1,7 +1,6 @@
 import {
   Flex,
   Table,
-  Checkbox,
   Tbody,
   Td,
   Text,
@@ -10,26 +9,20 @@ import {
   Tr,
   useColorModeValue
 } from '@chakra-ui/react'
-import { useMemo } from 'react'
+import React, { useMemo } from 'react'
 import {
-  ColumnInstance,
-  HeaderGroup,
-  Row,
   useGlobalFilter,
   usePagination,
   useSortBy,
-  useTable,
-  UseTableColumnProps
+  useTable
 } from 'react-table'
 
 // Custom components
 import Card from 'components/card/Card'
 import Menu from 'components/menu/MainMenu'
-import {} from 'components/charts/LineAreaChart'
-import { TableProps } from '../variables/columnsData'
-
-export default function CheckTable (props: TableProps) {
-  const { columnsData, tableData } = props
+import { TableProps } from 'views/admin/default/variables/columnsData'
+export default function ColumnsTable(props: TableProps) {
+  const { columnsData, tableData, cardTitle } = props
 
   const columns = useMemo(() => columnsData, [columnsData])
   const data = useMemo(() => tableData, [tableData])
@@ -52,10 +45,11 @@ export default function CheckTable (props: TableProps) {
     prepareRow,
     initialState
   } = tableInstance
-  initialState.pageSize = 11
+  initialState.pageSize = 5
 
   const textColor = useColorModeValue('secondaryGray.900', 'white')
   const borderColor = useColorModeValue('gray.200', 'whiteAlpha.100')
+  const alarmColor = useColorModeValue('green.500', 'green')
   return (
     <Card
       flexDirection='column'
@@ -63,67 +57,56 @@ export default function CheckTable (props: TableProps) {
       px='0px'
       overflowX={{ sm: 'scroll', lg: 'hidden' }}
     >
-      <Flex px='25px' justify='space-between' align='center'>
+      <Flex px='25px' justify='space-between' mb='20px' align='center'>
         <Text
           color={textColor}
           fontSize='22px'
           fontWeight='700'
           lineHeight='100%'
         >
-          Today's BID Table
+          {cardTitle}
         </Text>
-        {/* <Menu /> */}
       </Flex>
       <Table {...getTableProps()} variant='simple' color='gray.500' mb='24px'>
         <Thead>
-          {headerGroups.map((headerGroup, index: number) => (
+          {headerGroups.map((headerGroup, index) => (
             <Tr {...headerGroup.getHeaderGroupProps()} key={index}>
-              {headerGroup.headers.map(
-                (
-                  column: ColumnInstance & UseTableColumnProps<{}>,
-                  index: number
-                ) => (
-                  <Th
-                    {...column.getHeaderProps(column.getSortByToggleProps())}
-                    pe='10px'
-                    key={index}
-                    borderColor={borderColor}
+              {headerGroup.headers.map((column, index) => (
+                <Th
+                  {...column.getHeaderProps(column.getSortByToggleProps())}
+                  pe='10px'
+                  key={index}
+                  borderColor={borderColor}
+                >
+                  <Flex
+                    justify='space-between'
+                    align='center'
+                    fontSize={{ sm: '10px', lg: '12px' }}
+                    color='gray.400'
                   >
-                    <Flex
-                      justify='space-between'
-                      align='center'
-                      fontSize={{ sm: '10px', lg: '12px' }}
-                      color='gray.400'
-                    >
-                      {column.render('Header')}
-                    </Flex>
-                  </Th>
-                )
-              )}
+                    {column.render('Header')}
+                  </Flex>
+                </Th>
+              ))}
             </Tr>
           ))}
         </Thead>
         <Tbody {...getTableBodyProps()}>
-          {page.map((row: Row, index: number) => {
+          {page.map((row, index) => {
             prepareRow(row)
             return (
               <Tr {...row.getRowProps()} key={index}>
-                {row.cells.map((cell, index: number) => {
+                {row.cells.map((cell, index) => {
                   let data
-                  if (cell.column.Header === 'NAME') {
+                  if (cell.column.Header === 'UserEmail') {
                     data = (
                       <Flex align='center'>
-                        <Checkbox
-                          defaultChecked={cell.value[1]}
-                          colorScheme='brandScheme'
-                          me='10px'
-                        />
                         <Text color={textColor} fontSize='sm' fontWeight='700'>
-                          {cell.value[0]}
+                          {cell.value}
                         </Text>
                       </Flex>
                     )
-                  } else if (cell.column.Header === 'BID') {
+                  } else if (cell.column.Header === 'ClientName') {
                     data = (
                       <Flex align='center'>
                         <Text
@@ -136,16 +119,40 @@ export default function CheckTable (props: TableProps) {
                         </Text>
                       </Flex>
                     )
-                  } else if (cell.column.Header === 'MESSAGE') {
+                  } else if (cell.column.Header === 'Country') {
                     data = (
                       <Text color={textColor} fontSize='sm' fontWeight='700'>
                         {cell.value}
                       </Text>
                     )
-                  } else if (cell.column.Header === 'WAITTING') {
+                  } else if (cell.column.Header === 'JoinDate') {
                     data = (
                       <Text color={textColor} fontSize='sm' fontWeight='700'>
                         {cell.value}
+                      </Text>
+                    )
+                  } else if (cell.column.Header === 'Verified') {
+                    data = (
+                      <Text color={cell.value ? alarmColor : textColor} fontSize='sm' fontWeight='700'>
+                        {cell.value ? 'True' : 'False'}
+                      </Text>
+                    )
+                  } else if (cell.column.Header === 'BidDate') {
+                    data = (
+                      <Text color={textColor} fontSize='sm' fontWeight='700'>
+                        {cell.value}
+                      </Text>
+                    )
+                  } else if (cell.column.Header === 'Message') {
+                    data = (
+                      <Text color={cell.value ? alarmColor : textColor} fontSize='sm' fontWeight='700'>
+                        {cell.value ? 'True' : 'False'}
+                      </Text>
+                    )
+                  } else if (cell.column.Header === 'Finished') {
+                    data = (
+                      <Text color={cell.value ? alarmColor : textColor} fontSize='sm' fontWeight='700'>
+                        {cell.value ? 'True' : 'False'}
                       </Text>
                     )
                   }

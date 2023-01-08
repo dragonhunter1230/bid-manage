@@ -7,16 +7,16 @@ export const columnsDataCheck = [
     accessor: "name",
   },
   {
-    Header: "PROGRESS",
-    accessor: "progress",
+    Header: "BID",
+    accessor: "bid",
   },
   {
-    Header: "QUANTITY",
-    accessor: "quantity",
+    Header: "MESSAGE",
+    accessor: "message",
   },
   {
-    Header: "DATE",
-    accessor: "date",
+    Header: "WAITTING",
+    accessor: "wait",
   },
 ];
 export const columnsDataComplex = [
@@ -53,4 +53,6 @@ export type TableData = Column<{
 export type TableProps = {
   columnsData: ColumnData;
   tableData: TableData[];
+  cardTitle?: string;
+  setFilter?: () => void;
 };

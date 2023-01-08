@@ -11,7 +11,8 @@ export function SidebarBrand() {
 
 	return (
 		<Flex alignItems='center' flexDirection='column'>
-			<HorizonLogo h='26px' w='175px' my='32px' color={logoColor} />
+			{/* <HorizonLogo h='26px' w='175px' my='32px' color={logoColor} /> */}
+			<Flex fontWeight='bold' fontSize='34px'flexDirection={'row-reverse'} h='26px' w='175px' my='32px'>Welcome</Flex>
 			<HSeparator mb='20px' />
 		</Flex>
 	);

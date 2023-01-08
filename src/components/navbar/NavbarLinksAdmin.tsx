@@ -63,7 +63,7 @@ export default function HeaderLinks(props: { secondary: boolean }) {
 				me='10px'
 				borderRadius='30px'
 			/>
-			<Flex
+			{/* <Flex
 				bg={ethBg}
 				display={secondary ? 'flex' : 'none'}
 				borderRadius='30px'
@@ -173,7 +173,7 @@ export default function HeaderLinks(props: { secondary: boolean }) {
 					color={navbarIcon}
 					as={colorMode === 'light' ? IoMdMoon : IoMdSunny}
 				/>
-			</Button>
+			</Button> */}
 			<Menu>
 				<MenuButton p='0px'>
 					<Avatar
@@ -202,12 +202,12 @@ export default function HeaderLinks(props: { secondary: boolean }) {
 						</Text>
 					</Flex>
 					<Flex flexDirection='column' p='10px'>
-						<MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} borderRadius='8px' px='14px'>
+						{/* <MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} borderRadius='8px' px='14px'>
 							<Text fontSize='sm'>Profile Settings</Text>
 						</MenuItem>
 						<MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} borderRadius='8px' px='14px'>
 							<Text fontSize='sm'>Newsletter Settings</Text>
-						</MenuItem>
+						</MenuItem> */}
 						<MenuItem
 							_hover={{ bg: 'none' }}
 							_focus={{ bg: 'none' }}
