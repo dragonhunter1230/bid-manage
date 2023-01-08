@@ -70,9 +70,9 @@ export default function CheckTable (props: TableProps) {
           fontWeight='700'
           lineHeight='100%'
         >
-          Check Table
+          Today's BID Table
         </Text>
-        <Menu />
+        {/* <Menu /> */}
       </Flex>
       <Table {...getTableProps()} variant='simple' color='gray.500' mb='24px'>
         <Thead>
@@ -123,7 +123,7 @@ export default function CheckTable (props: TableProps) {
                         </Text>
                       </Flex>
                     )
-                  } else if (cell.column.Header === 'PROGRESS') {
+                  } else if (cell.column.Header === 'BID') {
                     data = (
                       <Flex align='center'>
                         <Text
@@ -132,17 +132,17 @@ export default function CheckTable (props: TableProps) {
                           fontSize='sm'
                           fontWeight='700'
                         >
-                          {cell.value}%
+                          {cell.value}
                         </Text>
                       </Flex>
                     )
-                  } else if (cell.column.Header === 'QUANTITY') {
+                  } else if (cell.column.Header === 'MESSAGE') {
                     data = (
                       <Text color={textColor} fontSize='sm' fontWeight='700'>
                         {cell.value}
                       </Text>
                     )
-                  } else if (cell.column.Header === 'DATE') {
+                  } else if (cell.column.Header === 'WAITTING') {
                     data = (
                       <Text color={textColor} fontSize='sm' fontWeight='700'>
                         {cell.value}

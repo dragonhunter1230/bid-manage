@@ -19,23 +19,23 @@ export default function DailyTraffic(props: { [x: string]: any }) {
 			<Flex justify='space-between' align='start' px='10px' pt='5px' w='100%'>
 				<Flex flexDirection='column' align='start' me='20px'>
 					<Text color='secondaryGray.600' fontSize='sm' fontWeight='500'>
-						Daily Traffic
+						Today's BID Chart
 					</Text>
 					<Flex align='end'>
 						<Text color={textColor} fontSize='34px' fontWeight='700' lineHeight='100%'>
-							2.579
+							29
 						</Text>
 						<Text ms='6px' color='secondaryGray.600' fontSize='sm' fontWeight='500'>
-							Visitors
+							BIDs
 						</Text>
 					</Flex>
 				</Flex>
-				<Flex align='center' mt='4px'>
+				{/* <Flex align='center' mt='4px'>
 					<Icon as={RiArrowUpSFill} color='green.500' />
 					<Text color='green.500' fontSize='sm' fontWeight='700'>
 						+2.45%
 					</Text>
-				</Flex>
+				</Flex> */}
 			</Flex>
 			<Box h='240px' mt='auto'>
 				<BarChart chartData={barChartDataDailyTraffic} chartOptions={barChartOptionsDailyTraffic} />

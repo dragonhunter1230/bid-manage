@@ -42,9 +42,9 @@ export default function WeeklyRevenue (props: { [x: string]: any }) {
           fontWeight='700'
           lineHeight='100%'
         >
-          Weekly Revenue
+          Weekly Statistics
         </Text>
-        <Button
+        {/* <Button
           alignItems='center'
           justifyContent='center'
           bg={bgButton}
@@ -58,7 +58,7 @@ export default function WeeklyRevenue (props: { [x: string]: any }) {
           {...rest}
         >
           <Icon as={MdBarChart} color={iconColor} w='24px' h='24px' />
-        </Button>
+        </Button> */}
       </Flex>
 
       <Box h='240px' mt='auto'>
