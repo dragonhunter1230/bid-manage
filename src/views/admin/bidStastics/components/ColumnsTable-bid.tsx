@@ -69,6 +69,7 @@ export default function ColumnsTable(props: TableProps) {
         >
           {cardTitle}
         </Text>
+        <Button leftIcon={<AddIcon/>} colorScheme={'red'} size={'sm'} borderRadius={5}>BID</Button>
       </Flex>
       <Table {...getTableProps()} variant='simple' color='gray.500' display={'block'} overflow={'auto'} m='1rem' width={'auto'}>
         <Thead>
