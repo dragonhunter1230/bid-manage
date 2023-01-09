@@ -10,7 +10,8 @@ import {
   useColorModeValue,
   SimpleGrid,
   Link,
-  useFocusEffect
+  useFocusEffect,
+  FormControl
 } from '@chakra-ui/react'
 
 // Custom components
@@ -38,6 +39,7 @@ export default function NftMarketplace() {
   const [userList, setUserList] = useState([])
 
   useEffect(() => {
+    
     axios.get(backendURL+'/user')
       .then(res => setUserList(res.data))
   },[])

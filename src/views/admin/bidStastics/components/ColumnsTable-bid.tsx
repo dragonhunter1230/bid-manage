@@ -9,9 +9,23 @@ import {
   Th,
   Thead,
   Tr,
-  useColorModeValue
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  FormControl,
+  FormLabel,
+  Input,
+  ModalCloseButton,
+  Select,
+  Textarea,
+  useColorModeValue,
+  useDisclosure
 } from '@chakra-ui/react'
-import React, { useMemo } from 'react'
+
+import React, { useMemo, useState, useEffect } from 'react'
 import {
   useGlobalFilter,
   usePagination,
@@ -24,11 +38,60 @@ import Card from 'components/card/Card'
 import Menu from 'components/menu/MainMenu'
 import { TableProps } from 'views/admin/default/variables/columnsData'
 import { AddIcon, EditIcon } from '@chakra-ui/icons'
+import axios, { formToJSON } from 'axios'
+import { backendURL1 } from 'utils/constants'
+
 export default function ColumnsTable(props: TableProps) {
   const { columnsData, tableData, cardTitle } = props
 
   const columns = useMemo(() => columnsData, [columnsData])
   const data = useMemo(() => tableData, [tableData])
+
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
+  const initialRef = React.useRef(null)
+  const finalRef = React.useRef(null)
+
+  const [name, setName] = useState('')
+  const [country, setCountry] = useState('')
+  const [jdate, setJdate] = useState('')
+  const [bdate, setBdate] = useState('')
+  const [count, setCount] = useState('')
+  const [content, setContent] = useState('')
+  const [url, setUrl] = useState('')
+  const [payment, setPayment] = useState(1)
+
+  const sendBid = () => {
+
+    const data = {
+      client_name: name,
+      client_country: country,
+      join_date: jdate,
+      bid_date: bdate,
+      bid_count: count,
+      bid_content: content,
+      chat_content: content,
+      task_url: url,
+      payment_flag: payment,
+      // user_id: props.id
+    }
+
+    console.log(data);
+
+    axios.post(backendURL1 + '/bid/insert', data)
+      .then(res => {
+        console.log(res)
+        setName('')
+        setCountry('')
+        setJdate('')
+        setBdate('')
+        setCount('')
+        setContent('')
+        setUrl('')
+        setPayment(1)
+      })
+      .catch(err => console.log(err))
+  }
 
   const tableInstance = useTable(
     {
@@ -69,7 +132,99 @@ export default function ColumnsTable(props: TableProps) {
         >
           {cardTitle}
         </Text>
-        <Button leftIcon={<AddIcon/>} colorScheme={'red'} size={'sm'} borderRadius={5}>BID</Button>
+        <Button onClick={onOpen} leftIcon={<AddIcon />} colorScheme={'red'} size={'sm'} borderRadius={5}>BID</Button>
+        <Modal
+          initialFocusRef={initialRef}
+          finalFocusRef={finalRef}
+          isOpen={isOpen}
+          onClose={onClose}
+        >
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Create your account</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody pb={6}>
+              <form id="inputbox" method="POST" onSubmit={sendBid} autoComplete={'off'}>
+                <FormControl>
+                  <FormLabel>Client Name</FormLabel>
+                  <Input
+                    placeholder='client name'
+                    value={name}
+                    onChange={e => setName(e.target.value)}
+                  />
+                </FormControl>
+
+                <FormControl mt={4}>
+                  <FormLabel>Client Country</FormLabel>
+                  <Input
+                    placeholder='Client Country'
+                    value={country}
+                    onChange={e => setCountry(e.target.value)}
+                  />
+                </FormControl>
+                <FormControl mt={4}>
+                  <FormLabel>Join Date</FormLabel>
+                  <Input
+                    placeholder="Joindate"
+                    size="md"
+                    type="datetime-local"
+                    value={jdate}
+                    onChange={e => setJdate(e.target.value)}
+                  />
+                </FormControl>
+                <FormControl mt={4}>
+                  <FormLabel>Bid Date</FormLabel>
+                  <Input
+                    placeholder="Bid Date"
+                    size="md"
+                    type="datetime-local"
+                    value={bdate}
+                    onChange={e => setBdate(e.target.value)}
+                  />
+                </FormControl>
+                <FormControl mt={4}>
+                  <FormLabel>Bid Count</FormLabel>
+                  <Input
+                    placeholder='Bid Count'
+                    value={count}
+                    onChange={e => setCount(e.target.value)}
+                  />
+                </FormControl>
+                <FormControl mt={4}>
+                  <FormLabel>Payment</FormLabel>
+                  <Select onChange={e => setPayment(e.target.value)}>
+                    <option value='1'>verify</option>
+                    <option value='0'>none verify</option>
+                  </Select>
+                </FormControl>
+                <FormControl mt={4}>
+                  <FormLabel>Chat Content</FormLabel>
+                  <Textarea
+                    placeholder='Here is a sample placeholder'
+                    size='sm'
+                    value={content}
+                    onChange={e => setContent(e.target.value)}
+                  />
+                </FormControl>
+                <FormControl mt={4}>
+                  <FormLabel>Task URL</FormLabel>
+                  <Input
+                    placeholder='URL'
+                    value={url}
+                    onChange={e => setUrl(e.target.value)}
+                  />
+                </FormControl>
+              </form>
+            </ModalBody>
+
+            <ModalFooter>
+              <Button colorScheme='blue' mr={3} onClick={sendBid}>
+                Save
+              </Button>
+              <Button onClick={onClose}>Cancel</Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </Flex>
       <Table {...getTableProps()} variant='simple' color='gray.500' display={'block'} overflow={'auto'} m='1rem' width={'auto'}>
         <Thead>
@@ -160,7 +315,7 @@ export default function ColumnsTable(props: TableProps) {
                   } else if (cell.column.Header === 'Action') {
                     data = (
                       <Flex>
-                        <IconButton icon={<EditIcon />} colorScheme={'messenger'} size={'sm'} aria-label={''}/>
+                        <IconButton icon={<EditIcon />} colorScheme={'messenger'} size={'sm'} aria-label={''} />
                         <Button ml={1} leftIcon={<AddIcon />} colorScheme={'messenger'} size={'sm'}>chat</Button>
                       </Flex>
                     )
