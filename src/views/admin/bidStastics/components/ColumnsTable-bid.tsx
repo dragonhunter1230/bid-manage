@@ -1,5 +1,7 @@
 import {
+  Button,
   Flex,
+  IconButton,
   Table,
   Tbody,
   Td,
@@ -21,6 +23,7 @@ import {
 import Card from 'components/card/Card'
 import Menu from 'components/menu/MainMenu'
 import { TableProps } from 'views/admin/default/variables/columnsData'
+import { AddIcon, EditIcon } from '@chakra-ui/icons'
 export default function ColumnsTable(props: TableProps) {
   const { columnsData, tableData, cardTitle } = props
 
@@ -57,7 +60,7 @@ export default function ColumnsTable(props: TableProps) {
       px='0px'
       overflowX={{ sm: 'scroll', lg: 'hidden' }}
     >
-      <Flex px='25px' justify='space-between' mb='20px' align='center'>
+      <Flex px='25px' justify='space-between' align='center' mt={'1rem'}>
         <Text
           color={textColor}
           fontSize='22px'
@@ -67,7 +70,7 @@ export default function ColumnsTable(props: TableProps) {
           {cardTitle}
         </Text>
       </Flex>
-      <Table {...getTableProps()} variant='simple' color='gray.500' mb='24px'>
+      <Table {...getTableProps()} variant='simple' color='gray.500' display={'block'} overflow={'auto'} m='1rem' width={'auto'}>
         <Thead>
           {headerGroups.map((headerGroup, index) => (
             <Tr {...headerGroup.getHeaderGroupProps()} key={index}>
@@ -98,15 +101,7 @@ export default function ColumnsTable(props: TableProps) {
               <Tr {...row.getRowProps()} key={index}>
                 {row.cells.map((cell, index) => {
                   let data
-                  if (cell.column.Header === 'UserEmail') {
-                    data = (
-                      <Flex align='center'>
-                        <Text color={textColor} fontSize='sm' fontWeight='700'>
-                          {cell.value}
-                        </Text>
-                      </Flex>
-                    )
-                  } else if (cell.column.Header === 'ClientName') {
+                  if (cell.column.Header === 'ClientName') {
                     data = (
                       <Flex align='center'>
                         <Text
@@ -131,29 +126,42 @@ export default function ColumnsTable(props: TableProps) {
                         {cell.value}
                       </Text>
                     )
-                  } else if (cell.column.Header === 'Verified') {
-                    data = (
-                      <Text color={cell.value ? alarmColor : textColor} fontSize='sm' fontWeight='700'>
-                        {cell.value ? 'True' : 'False'}
-                      </Text>
-                    )
                   } else if (cell.column.Header === 'BidDate') {
                     data = (
                       <Text color={textColor} fontSize='sm' fontWeight='700'>
                         {cell.value}
                       </Text>
                     )
+                  } else if (cell.column.Header === 'Verified') {
+                    data = (
+                      <Text color={cell.value ? alarmColor : textColor} fontSize='sm' fontWeight='700'>
+                        {cell.value ? 'Verified' : ''}
+                      </Text>
+                    )
                   } else if (cell.column.Header === 'Message') {
                     data = (
                       <Text color={cell.value ? alarmColor : textColor} fontSize='sm' fontWeight='700'>
-                        {cell.value ? 'True' : 'False'}
+                        {cell.value ? 'Message' : ''}
                       </Text>
                     )
                   } else if (cell.column.Header === 'Finished') {
                     data = (
                       <Text color={cell.value ? alarmColor : textColor} fontSize='sm' fontWeight='700'>
-                        {cell.value ? 'True' : 'False'}
+                        {cell.value ? 'Finished' : ''}
                       </Text>
+                    )
+                  } else if (cell.column.Header === 'TaskURL') {
+                    data = (
+                      <Text color={textColor} fontSize='sm' fontWeight='700'>
+                        {cell.value}
+                      </Text>
+                    )
+                  } else if (cell.column.Header === 'Action') {
+                    data = (
+                      <Flex>
+                        <IconButton icon={<EditIcon />} colorScheme={'messenger'} size={'sm'} aria-label={''}/>
+                        <Button ml={1} leftIcon={<AddIcon />} colorScheme={'messenger'} size={'sm'}>chat</Button>
+                      </Flex>
                     )
                   }
                   return (

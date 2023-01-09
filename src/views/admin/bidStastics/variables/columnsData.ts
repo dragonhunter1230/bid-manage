@@ -83,35 +83,40 @@ export const columnsDataComplex: Columns = [
 
 export const columnsDataBID: Columns = [
   {
-    Header: "UserEmail",
-    accessor: "userEmail",
-  },
-  {
     Header: "ClientName",
-    accessor: "clientName",
+    accessor: "client_name",
   },
   {
     Header: "Country",
-    accessor: "country",
+    accessor: "client_country",
   },
   {
     Header: "JoinDate",
-    accessor: "joinDate",
-  },
-  {
-    Header: "Verified",
-    accessor: "verified",
+    accessor: "join_date",
   },
   {
     Header: "BidDate",
-    accessor: "bidDate",
+    accessor: "bid_date",
+  },
+  {
+    Header: "Verified",
+    accessor: "payment_flag",
   },
   {
     Header: "Message",
-    accessor: "message",
+    accessor: "message_flag",
   },
   {
     Header: "Finished",
-    accessor: "finished",
+    accessor: "finished_flag",
   },
+  {
+    Header: "TaskURL",
+    accessor: "task_url",
+  },
+  {
+    Header: "Action",
+    accessor: "action",
+  }
+
 ];

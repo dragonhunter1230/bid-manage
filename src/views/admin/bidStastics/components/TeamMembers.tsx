@@ -43,8 +43,10 @@ function TopCreatorTable(props: TableProps) {
     getTableBodyProps,
     headerGroups,
     page,
-    prepareRow
+    prepareRow,
+    initialState
   } = tableInstance
+  initialState.pageSize = 20
 
   const textColor = useColorModeValue('navy.700', 'white')
   const textColorSecondary = useColorModeValue('secondaryGray.600', 'white')
@@ -95,7 +97,7 @@ function TopCreatorTable(props: TableProps) {
             ))}
           </Thead>
 
-          <Tbody {...getTableBodyProps()}>
+          <Tbody>
             {page.map((row, index) => {
               prepareRow(row)
               return (

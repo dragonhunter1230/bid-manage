@@ -57,7 +57,7 @@ export default function ColumnsTable(props: TableProps) {
       px='0px'
       overflowX={{ sm: 'scroll', lg: 'hidden' }}
     >
-      <Flex px='25px' justify='space-between' mb='20px' align='center'>
+      <Flex px='25px' justify='space-between' mt='20px' align='center'>
         <Text
           color={textColor}
           fontSize='22px'
@@ -67,7 +67,7 @@ export default function ColumnsTable(props: TableProps) {
           Team Members
         </Text>
       </Flex>
-      <Table {...getTableProps()} variant='simple' color='gray.500' mb='24px'>
+      <Table {...getTableProps()} variant='simple' color='gray.500' overflow={'auto'} m='2rem' width={'auto'}>
         <Thead>
           {headerGroups.map((headerGroup, index) => (
             <Tr {...headerGroup.getHeaderGroupProps()} key={index}>

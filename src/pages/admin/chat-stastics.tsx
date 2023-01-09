@@ -19,7 +19,7 @@ import tableDataTeamMembers from 'views/admin/bidStastics/variables/tableDataTea
 import { tableColumnsTeamMembers } from 'views/admin/bidStastics/variables/tableColumnsTeamMembers'
 import AdminLayout from 'layouts/admin'
 import { TableData } from 'views/admin/default/variables/columnsData'
-import ColumnsTableBID from 'views/admin/bidStastics/components/ColumnsTable-bid'
+import ChatList from 'views/admin/chatHistory/components/ChatList'
 import {
   columnsDataBID,
 } from 'views/admin/bidStastics/variables/columnsData'
@@ -30,8 +30,16 @@ export default function NftMarketplace() {
   // Chakra Color Mode
   const textColor = useColorModeValue('secondaryGray.900', 'white')
   const textColorBrand = useColorModeValue('brand.500', 'white')
-  const [selectUser, setSelectUser] = useState('');
-  const [selectClient, setSelectClient] = useState('');
+  const [selectUser, setSelectUser] = useState('')
+  const [beforeUser, setBeforeUser] = useState('')
+  const [selectClient, setSelectClient] = useState('')
+  const [cardTitle, setCardTitle] = useState('')
+
+  useEffect(()=>{
+    if(!isEmpty(selectUser)){
+      setCardTitle(`${selectUser}'s Chat History`);
+    }
+  }, [selectUser, selectClient])
   return (
     <AdminLayout>
       <Box pt={{ base: '180px', md: '80px', xl: '80px' }}>
@@ -54,7 +62,7 @@ export default function NftMarketplace() {
                 setFilter={setSelectUser}
               />
             </Card>
-            {
+            {/* {
               !isEmpty(selectUser) ?
                 <Card>
                   <TeamMemmbers
@@ -66,17 +74,17 @@ export default function NftMarketplace() {
                 </Card>
                 :
                 null
-            }
+            } */}
           </Flex>
           <Flex
             flexDirection='column'
             gridArea={{ xl: '1 / 2 / 4 / 5' }}
           >
             {
-              !isEmpty(selectClient) ? <ColumnsTableBID
+              !isEmpty(selectUser) ? <ChatList
                 columnsData={columnsDataBID}
                 tableData={(tableDataBID as unknown) as TableData[]}
-                cardTitle={`Chat History between ${selectUser} & ${selectClient}`}
+                cardTitle={cardTitle}
               />
                 :
                 null

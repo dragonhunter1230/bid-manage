@@ -1,6 +1,6 @@
 export const tableColumnsTeamMembers = [
   {
     Header: "Name",
-    accessor: "name",
+    accessor: "user_name",
   }
 ];

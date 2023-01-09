@@ -41,13 +41,13 @@ const routes: IRoute[] = [
   //   component: NFTMarketplace,
   //   secondary: true
   // },
-  {
-    name: 'Data Tables',
-    layout: '/admin',
-    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
-    path: '/data-tables',
-    component: DataTables
-  },
+  // {
+  //   name: 'Data Tables',
+  //   layout: '/admin',
+  //   icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
+  //   path: '/data-tables',
+  //   component: DataTables
+  // },
   {
     name: 'Member Manage',
     layout: '/admin',
