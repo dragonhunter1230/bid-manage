@@ -207,15 +207,15 @@ export const barChartOptionsUserActivity = {
 
 export const barChartDataConsumption = [
   {
-    name: "PRODUCT A",
+    name: "Receive Message",
     data: [400, 370, 330, 390, 320, 350, 360, 320, 380],
   },
   {
-    name: "PRODUCT B",
+    name: "Waiting",
     data: [400, 370, 330, 390, 320, 350, 360, 320, 380],
   },
   {
-    name: "PRODUCT C",
+    name: "End Work",
     data: [400, 370, 330, 390, 320, 350, 360, 320, 380],
   },
 ];
@@ -309,8 +309,8 @@ export const barChartOptionsConsumption: ApexGeneric = {
 };
 
 export const pieChartOptions: ApexGeneric = {
-  labels: ["Your files", "System", "Empty"],
-  colors: ["#4318FF", "#6AD2FF", "#EFF4FB"],
+  labels: ["Waiting", "Message", "Empty"],
+  colors: ["#4318FF", "#6AD2FF", "red"],
   chart: {
     width: "50px",
   },
@@ -353,12 +353,12 @@ export const pieChartData = [63, 25, 12];
 
 export const lineChartDataTotalSpent = [
   {
-    name: "Revenue",
-    data: [50, 64, 48, 66, 49, 68],
+    name: "Received Message",
+    data: [30, 40, 24, 46, 20, 46],
   },
   {
-    name: "Profit",
-    data: [30, 40, 24, 46, 20, 46],
+    name: "Bid",
+    data: [50, 64, 48, 66, 49, 68],
   },
 ];
 

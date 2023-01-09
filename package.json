@@ -16,6 +16,7 @@
     "@types/jest": "^25.2.3",
     "@types/react-dom": "^18.0.6",
     "apexcharts": "^3.35.2",
+    "axios": "^1.2.2",
     "framer-motion": "^4.1.17",
     "next": "^12.2.5",
     "react": "^17.0.2",
@@ -41,7 +42,11 @@
     "deploy": "gh-pages -d build"
   },
   "browserslist": {
-    "production": [">0.2%", "not dead", "not op_mini all"],
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
@@ -56,5 +61,6 @@
     "eslint": "^8.23.0",
     "eslint-config-next": "^12.2.5",
     "gh-pages": "^3.2.3"
-  }
+  },
+  "proxy": "http://192.168.104.102:3000"
 }

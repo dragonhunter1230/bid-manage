@@ -62,9 +62,9 @@ export default function TotalSpent(props: { [x: string]: any }) {
 			</Flex>
 			<Flex w='100%' flexDirection={{ base: 'column', lg: 'row' }}>
 				<Flex flexDirection='column' me='20px' mt='28px'>
-					<Text color={textColor} fontSize='34px' textAlign='start' fontWeight='700' lineHeight='100%'>
+					{/* <Text color={textColor} fontSize='34px' textAlign='start' fontWeight='700' lineHeight='100%'>
 						$37.5K
-					</Text>
+					</Text> */}
 					<Flex align='center' mb='20px'>
 						<Text color='secondaryGray.600' fontSize='sm' fontWeight='500' mt='4px' me='12px'>
 							Total Spent

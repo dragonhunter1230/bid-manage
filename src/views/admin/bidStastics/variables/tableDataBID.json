@@ -1,0 +1,42 @@
+[
+  {
+    "client_name":"Marketplace",
+    "client_country": "India", 
+    "join_date": "12.Jan.2021",
+    "payment_flag": 0,
+    "bid_date": "12.Jan.2021",
+    "message_flag": 1,
+    "finished_flag": 1,
+    "task_url": "123465789.com"
+  },
+  {
+    "client_name":"Venus DB PRO",
+    "client_country": "India", 
+    "join_date": "12.Jan.2021",
+    "payment_flag": 1,
+    "bid_date": "12.Jan.2021",
+    "message_flag": 0,
+    "finished_flag": 0,
+    "task_url": "123465789.com"
+  },
+  {
+    "client_name":"Venus DS",
+    "client_country": "India", 
+    "join_date": "12.Jan.2021",
+    "payment_flag": 0,
+    "bid_date": "12.Jan.2021",
+    "message_flag": 1,
+    "finished_flag": 0,
+    "task_url": "123465789.com"
+  },
+  {
+    "client_name":"Venus 3D Asset",
+    "client_country": "India", 
+    "join_date": "12.Jan.2021",
+    "payment_flag": 0,
+    "bid_date": "12.Jan.2021",
+    "message_flag": 0,
+    "finished_flag": 0,
+    "task_url": "123465789.com"
+  }
+]
