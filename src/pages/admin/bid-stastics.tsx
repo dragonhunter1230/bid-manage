@@ -35,50 +35,65 @@ export default function NftMarketplace() {
   const textColorBrand = useColorModeValue('brand.500', 'white')
   const [cardTitle, setCardTitle] = useState('Today')
   const [selectUser, setSelectUser] = useState('')
+  const [selectUserID, setSelectUserID] = useState('')
   const [userList, setUserList] = useState([])
+  const [bidList, setBidList] = useState([])
+  useEffect(() => {
+    axios.get(backendURL + '/user')
+      .then(res => setUserList(res.data))
+  }, [])
 
   useEffect(() => {
-    axios.get(backendURL+'/user')
-      .then(res => setUserList(res.data))
-  },[])
+    if (!isEmpty(selectUserID)) {
+      axios.get(`${backendURL}/bid/getAll?id=${selectUserID}`)
+        .then(res => {
+          if (!isEmpty(res.data)) {
+            setBidList(res.data)
+          } else {
+            setBidList([])
+          }
+        })
+        .catch(err => console.log(err))
+    }
+  }, [selectUserID])
+
   return (
     <AdminLayout>
       <Box pt={{ base: '180px', md: '80px', xl: '80px' }}>
         {/* Main Fields */}
         <Grid
           mb='20px'
-          gridTemplateColumns={{ xl: 'repeat(4, 1fr)' }}
-          gap={{ base: '20px', xl: '20px' }}
-          display={{ base: 'block', xl: 'grid' }}
+          gridTemplateColumns={{ md: 'repeat(4, 1fr)' }}
+          gap={{ base: '20px', md: '20px' }}
+          display={{ base: 'block', md: 'grid' }}
         >
           <Flex
             flexDirection='column'
             gridArea={{ xl: '1 / 1 / 4 / 2' }}
           >
-            <MiniCalendar h='100%' minW='100%' selectRange={false} />
-            <Card mt='20px' mb='20px'>
-              <TeamMemmbers
-                tableData={(userList as unknown) as TableData[]}
-                columnsData={tableColumnsTeamMembers}
-                cardTitle={'Team members'}
-                setFilter={setSelectUser}
-              />
-            </Card>
+            <SimpleGrid columns={{ base: 2, md: 2, xl: 1 }} mb='20px' display={'contents'}>
+              <MiniCalendar h='100%' minW='100%' selectRange={false} mb='20px'/>
+              <Card>
+                <TeamMemmbers
+                  tableData={(userList as unknown) as TableData[]}
+                  columnsData={tableColumnsTeamMembers}
+                  cardTitle={'Team members'}
+                  setFilter={setSelectUser}
+                  setID={setSelectUserID}
+                />
+              </Card>
+            </SimpleGrid>
           </Flex>
           <Flex
             flexDirection='column'
             gridArea={{ xl: '1 / 2 / 4 / 5' }}
           >
-            {
-              !isEmpty(selectUser) ?
-                <ColumnsTableBID
-                  columnsData={columnsDataBID}
-                  tableData={(tableDataBID as unknown) as TableData[]}
-                  cardTitle={`${selectUser}'s BID Table`}
-                />
-                :
-                null
-            }
+            {!isEmpty(selectUser) && isEmpty(bidList) && <Flex mt={50} justifyContent={'center'} fontSize={28} alignItems={'baseline'}>
+              There are not
+              <Flex ml={5} mr={5} fontSize={32} color={'red.600'}>{selectUser}</Flex>
+              's BID list
+            </Flex>}
+            {!isEmpty(selectUser) && !isEmpty(bidList) && <ColumnsTableBID columnsData={columnsDataBID} tableData={(bidList as unknown) as TableData[]} cardTitle={`${selectUser}'s BID Table`} />}
           </Flex>
         </Grid>
         {/* Delete Product */}

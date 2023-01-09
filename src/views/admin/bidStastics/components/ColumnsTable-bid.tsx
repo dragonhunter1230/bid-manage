@@ -71,7 +71,7 @@ export default function ColumnsTable(props: TableProps) {
         </Text>
         <Button leftIcon={<AddIcon/>} colorScheme={'red'} size={'sm'} borderRadius={5}>BID</Button>
       </Flex>
-      <Table {...getTableProps()} variant='simple' color='gray.500' display={'block'} overflow={'auto'} m='1rem' width={'auto'}>
+      <Table {...getTableProps()} variant='simple' color='gray.500' display={'table'} overflow={'auto'} p='1rem' width={'auto'}>
         <Thead>
           {headerGroups.map((headerGroup, index) => (
             <Tr {...headerGroup.getHeaderGroupProps()} key={index}>
