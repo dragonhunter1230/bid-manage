@@ -23,7 +23,7 @@ import {
 import { TableProps } from 'views/admin/default/variables/columnsData'
 const avatar = "https://scontent.fotp8-1.fna.fbcdn.net/v/t1.6435-9/202074221_101421322193072_8201469573182417214_n.png?_nc_cat=108&ccb=1-5&_nc_sid=09cbfe&_nc_ohc=78fLje1ri2sAX-9M9k1&_nc_ht=scontent.fotp8-1.fna&oh=00_AT-yCcI9whoAZcSaGmJQK53xRa1CldCaj2q5qJlPvDvHRA&oe=626E41FF";
 function TopCreatorTable(props: TableProps) {
-  const { columnsData, tableData, cardTitle, setFilter } = props
+  const { columnsData, tableData, cardTitle, setFilter, setID } = props
 
   const columns = useMemo(() => columnsData, [columnsData])
   const data = useMemo(() => tableData, [tableData])
@@ -46,7 +46,7 @@ function TopCreatorTable(props: TableProps) {
     prepareRow,
     initialState
   } = tableInstance
-  initialState.pageSize = 20
+  initialState.pageSize = 100
 
   const textColor = useColorModeValue('navy.700', 'white')
   const textColorSecondary = useColorModeValue('secondaryGray.600', 'white')
@@ -97,7 +97,7 @@ function TopCreatorTable(props: TableProps) {
             ))}
           </Thead>
 
-          <Tbody>
+          <Tbody display={'grid'} maxHeight={300} overflow={'auto'}>
             {page.map((row, index) => {
               prepareRow(row)
               return (
@@ -118,7 +118,10 @@ function TopCreatorTable(props: TableProps) {
                             fontSize='sm'
                             fontWeight='600'
                             cursor={'pointer'}
-                            onClick={(e) => setFilter(e.target.innerText)}
+                            onClick={(e) => {
+                              setFilter(cell.value)
+                              setID(cell.row.id)
+                            }}
                           >
                             {cell.value}
                           </Text>
