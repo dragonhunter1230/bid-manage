@@ -120,7 +120,7 @@ function TopCreatorTable(props: TableProps) {
                             cursor={'pointer'}
                             onClick={(e) => {
                               setFilter(cell.value)
-                              setID(cell.row.id)
+                              setID(cell.row.original.id)
                             }}
                           >
                             {cell.value}

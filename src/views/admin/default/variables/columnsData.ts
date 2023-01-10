@@ -56,4 +56,6 @@ export type TableProps = {
   cardTitle?: string;
   setFilter?: any;
   setID?: any;
+  selectID?: string;
+  getBIDList?: any;
 };

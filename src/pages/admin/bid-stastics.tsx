@@ -10,7 +10,8 @@ import {
   useColorModeValue,
   SimpleGrid,
   Link,
-  useFocusEffect
+  useFocusEffect,
+  FormControl
 } from '@chakra-ui/react'
 
 // Custom components
@@ -29,6 +30,7 @@ import MiniCalendar from 'components/calendar/MiniCalendar'
 import { isEmpty } from '@chakra-ui/utils'
 import axios from 'axios'
 import { backendURL } from 'utils/constants'
+import { AddIcon } from '@chakra-ui/icons'
 export default function NftMarketplace() {
   // Chakra Color Mode
   const textColor = useColorModeValue('secondaryGray.900', 'white')
@@ -43,17 +45,22 @@ export default function NftMarketplace() {
       .then(res => setUserList(res.data))
   }, [])
 
+  const getBIDList = () => {
+    axios.get(`${backendURL}/bid/getAll?id=${selectUserID}`)
+      .then(res => {
+        if (res.data) {
+          console.log(res.data)
+          setBidList(res.data)
+        } else {
+          setBidList([])
+        }
+      })
+      .catch(err => console.log(err))
+  }
+
   useEffect(() => {
     if (!isEmpty(selectUserID)) {
-      axios.get(`${backendURL}/bid/getAll?id=${selectUserID}`)
-        .then(res => {
-          if (!isEmpty(res.data)) {
-            setBidList(res.data)
-          } else {
-            setBidList([])
-          }
-        })
-        .catch(err => console.log(err))
+      getBIDList()
     }
   }, [selectUserID])
 
@@ -72,7 +79,7 @@ export default function NftMarketplace() {
             gridArea={{ xl: '1 / 1 / 4 / 2' }}
           >
             <SimpleGrid columns={{ base: 2, md: 2, xl: 1 }} mb='20px' display={'contents'}>
-              <MiniCalendar h='100%' minW='100%' selectRange={false} mb='20px'/>
+              <MiniCalendar h='100%' minW='100%' selectRange={false} mb='20px' />
               <Card>
                 <TeamMemmbers
                   tableData={(userList as unknown) as TableData[]}
@@ -88,12 +95,7 @@ export default function NftMarketplace() {
             flexDirection='column'
             gridArea={{ xl: '1 / 2 / 4 / 5' }}
           >
-            {!isEmpty(selectUser) && isEmpty(bidList) && <Flex mt={50} justifyContent={'center'} fontSize={28} alignItems={'baseline'}>
-              There are not
-              <Flex ml={5} mr={5} fontSize={32} color={'red.600'}>{selectUser}</Flex>
-              's BID list
-            </Flex>}
-            {!isEmpty(selectUser) && !isEmpty(bidList) && <ColumnsTableBID columnsData={columnsDataBID} tableData={(bidList as unknown) as TableData[]} cardTitle={`${selectUser}'s BID Table`} />}
+            {!isEmpty(selectUser) && <ColumnsTableBID columnsData={columnsDataBID} tableData={(bidList as unknown) as TableData[]} cardTitle={`${selectUser}'s BID Table`} selectID={selectUserID} getBIDList={getBIDList}/>}
           </Flex>
         </Grid>
         {/* Delete Product */}
