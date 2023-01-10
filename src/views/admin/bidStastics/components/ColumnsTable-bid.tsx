@@ -132,11 +132,11 @@ export default function ColumnsTable(props: TableProps) {
         <Flex justifyContent={'space-evenly'} fontSize={28} alignItems={'baseline'}>
           {
             isEmpty(tableData) ? <Flex>There are not
-            <Flex ml={5} mr={5} fontSize={32} color={'red.600'}>{cardTitle}</Flex>
-            's BID list</Flex>
-            :
-            <Flex><Flex ml={5} mr={5} fontSize={32} color={'red.600'}>{cardTitle}</Flex>
-            's BID list</Flex>
+              <Flex ml={5} mr={5} fontSize={32} color={'red.600'}>{cardTitle}</Flex>
+              's BID list</Flex>
+              :
+              <Flex><Flex ml={5} mr={5} fontSize={32} color={'red.600'}>{cardTitle}</Flex>
+                's BID list</Flex>
           }
         </Flex>
         <Button onClick={onOpen} leftIcon={<AddIcon />} colorScheme={'red'} size={'sm'} borderRadius={5}>BID</Button>
@@ -325,6 +325,99 @@ export default function ColumnsTable(props: TableProps) {
                         data = (
                           <Flex>
                             <IconButton icon={<EditIcon />} colorScheme={'messenger'} size={'sm'} aria-label={''} />
+                            <Button onClick={onOpen} leftIcon={<AddIcon />} colorScheme={'red'} size={'sm'} borderRadius={5}>BID</Button>
+                            <Modal
+                              initialFocusRef={initialRef}
+                              finalFocusRef={finalRef}
+                              isOpen={isOpen}
+                              onClose={onClose}
+                            >
+                              <ModalOverlay />
+                              <ModalContent>
+                                <ModalHeader>Create your account</ModalHeader>
+                                <ModalCloseButton />
+                                <ModalBody pb={6}>
+                                  <form id="inputbox" method="POST" onSubmit={sendBid} autoComplete={'off'}>
+                                    <FormControl>
+                                      <FormLabel>Client Name</FormLabel>
+                                      <Input
+                                        placeholder='client name'
+                                        value={name}
+                                        onChange={e => setName(e.target.value)}
+                                      />
+                                    </FormControl>
+
+                                    <FormControl mt={4}>
+                                      <FormLabel>Client Country</FormLabel>
+                                      <Input
+                                        placeholder='Client Country'
+                                        value={country}
+                                        onChange={e => setCountry(e.target.value)}
+                                      />
+                                    </FormControl>
+                                    <FormControl mt={4}>
+                                      <FormLabel>Join Date</FormLabel>
+                                      <Input
+                                        placeholder="Joindate"
+                                        size="md"
+                                        type="datetime-local"
+                                        value={jdate}
+                                        onChange={e => setJdate(e.target.value)}
+                                      />
+                                    </FormControl>
+                                    <FormControl mt={4}>
+                                      <FormLabel>Bid Date</FormLabel>
+                                      <Input
+                                        placeholder="Bid Date"
+                                        size="md"
+                                        type="datetime-local"
+                                        value={bdate}
+                                        onChange={e => setBdate(e.target.value)}
+                                      />
+                                    </FormControl>
+                                    <FormControl mt={4}>
+                                      <FormLabel>Bid Count</FormLabel>
+                                      <Input
+                                        placeholder='Bid Count'
+                                        value={count}
+                                        onChange={e => setCount(e.target.value)}
+                                      />
+                                    </FormControl>
+                                    <FormControl mt={4}>
+                                      <FormLabel>Payment</FormLabel>
+                                      <Select onChange={e => setPayment(e.target.value)}>
+                                        <option value='1'>verify</option>
+                                        <option value='0'>none verify</option>
+                                      </Select>
+                                    </FormControl>
+                                    <FormControl mt={4}>
+                                      <FormLabel>BID Content</FormLabel>
+                                      <Textarea
+                                        placeholder='Here is a sample placeholder'
+                                        size='sm'
+                                        value={content}
+                                        onChange={e => setContent(e.target.value)}
+                                      />
+                                    </FormControl>
+                                    <FormControl mt={4}>
+                                      <FormLabel>Task URL</FormLabel>
+                                      <Input
+                                        placeholder='URL'
+                                        value={url}
+                                        onChange={e => setUrl(e.target.value)}
+                                      />
+                                    </FormControl>
+                                  </form>
+                                </ModalBody>
+
+                                <ModalFooter>
+                                  <Button colorScheme='blue' mr={3} onClick={sendBid}>
+                                    Save
+                                  </Button>
+                                  <Button onClick={onClose}>Cancel</Button>
+                                </ModalFooter>
+                              </ModalContent>
+                            </Modal>
                             <IconButton icon={<DeleteIcon />} colorScheme={'messenger'} size={'sm'} aria-label={''} />
                             <Button ml={1} leftIcon={<AddIcon />} colorScheme={'messenger'} size={'sm'}>chat</Button>
                           </Flex>
