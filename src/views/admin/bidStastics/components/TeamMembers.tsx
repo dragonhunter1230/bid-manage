@@ -106,7 +106,7 @@ function TopCreatorTable(props: TableProps) {
                     let data
                     if (cell.column.Header === 'Name') {
                       data = (
-                        <Flex align='center'>
+                        <Flex align='center' bg={textColorSecondary} px={3} py={1}>
                           <Avatar
                             src={avatar}
                             w='30px'
@@ -135,6 +135,7 @@ function TopCreatorTable(props: TableProps) {
                         fontSize={{ sm: '14px' }}
                         minW={{ sm: '150px', md: '200px', lg: 'auto' }}
                         borderColor='transparent'
+                        display={'block'}
                       >
                         {data}
                       </Td>

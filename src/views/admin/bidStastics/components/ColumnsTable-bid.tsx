@@ -9,20 +9,20 @@ import {
   Th,
   Thead,
   Tr,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  FormControl,
-  FormLabel,
-  Input,
-  ModalCloseButton,
-  Select,
-  Textarea,
   useColorModeValue,
-  useDisclosure
+  useDisclosure,
+  Tooltip,
+  Link,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
+  Box,
+  ButtonGroup,
+  PopoverFooter
 } from '@chakra-ui/react'
 
 import React, { useMemo, useState, useEffect } from 'react'
@@ -37,66 +37,29 @@ import {
 import Card from 'components/card/Card'
 import Menu from 'components/menu/MainMenu'
 import { TableProps } from 'views/admin/default/variables/columnsData'
-import { AddIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons'
+import { AddIcon, CheckIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import axios, { formToJSON } from 'axios'
-import { backendURL1 } from 'utils/constants'
+import { backendURL } from 'utils/constants'
 import { isEmpty } from '@chakra-ui/utils'
-
-export default function ColumnsTable(props: TableProps) {
+import moment from 'moment'
+import BID from 'components/bid/bid'
+import ChatList from 'components/chat/chatList'
+import InsertChat from 'components/chat/insertChat'
+export default function ColumnsTable(props: TableProps): JSX.Element {
   const { columnsData, tableData, cardTitle, selectID, getBIDList } = props
 
+  const initialFocusRef = React.useRef()
   const columns = useMemo(() => columnsData, [columnsData])
   const data = useMemo(() => tableData, [tableData])
-
-  const { isOpen, onClose, onOpen } = useDisclosure()
-
-  const initialRef = React.useRef(null)
-  const finalRef = React.useRef(null)
-
-  const [name, setName] = useState('')
-  const [country, setCountry] = useState('')
-  const [jdate, setJdate] = useState('')
-  const [bdate, setBdate] = useState('')
-  const [count, setCount] = useState('')
-  const [content, setContent] = useState('')
-  const [url, setUrl] = useState('')
-  const [payment, setPayment] = useState(1)
-
-  const sendBid = () => {
-
-    const data = {
-      user_id: selectID,
-      client_name: name,
-      client_country: country,
-      join_date: jdate,
-      bid_date: bdate,
-      bid_count: count,
-      bid_content: content,
-      chat_content: '',
-      task_url: url,
-      payment_flag: payment,
-      // user_id: props.id
-    }
-
-    console.log(data);
-
-    axios.post(backendURL1 + '/bid/insert', data)
-      .then(res => {
-        //console.log(res)
-        setName('')
-        setCountry('')
-        setJdate('')
-        setBdate('')
-        setCount('')
-        setContent('')
-        setUrl('')
-        setPayment(1)
-        onClose()
-        getBIDList()
-      })
-      .catch(err => console.log(err))
-  }
-
+  const [actionType, setActionType] = useState(true)
+  const [selectData, setSelectData] = useState({})
+  const [modalFlag, setModalFlag] = useState(false)
+  const [datailBIDData, setDetailBIDData] = useState('')
+  const [datailChatData, setDetailChatData] = useState('')
+  const [detailFlag, setDetailFlag] = useState(false)
+  const [insertChatFlag, setInsertChatFlag] = useState(false)
+  const [selectBIDId, setSelectBIDId] = useState(null)
+  const [beforeChatContent, setBeforeChatContent] = useState('')
   const tableInstance = useTable(
     {
       columns,
@@ -121,6 +84,31 @@ export default function ColumnsTable(props: TableProps) {
   const borderColor = useColorModeValue('gray.200', 'whiteAlpha.100')
   const alarmColor = useColorModeValue('green.500', 'green')
 
+  const AddBID = () => {
+    setActionType(true)
+    setModalFlag(true)
+  }
+
+  const EditBID = (key: object) => {
+    console.log(key)
+    setSelectData(key)
+    setActionType(false)
+    setModalFlag(true)
+  }
+
+  const CloseModal = () => {
+    setModalFlag(false)
+    setDetailFlag(false)
+    setInsertChatFlag(false)
+    getBIDList()
+  }
+
+  const DisplayDetailData = (bid: string, chat: string) => {
+    setDetailBIDData(bid)
+    setDetailChatData(chat)
+    setDetailFlag(true)
+  }
+
   return (
     <Card
       flexDirection='column'
@@ -131,111 +119,29 @@ export default function ColumnsTable(props: TableProps) {
       <Flex px='25px' justify='space-between' align='center' mt={'1rem'}>
         <Flex justifyContent={'space-evenly'} fontSize={28} alignItems={'baseline'}>
           {
-            isEmpty(tableData) ? <Flex>There are not
-              <Flex ml={5} mr={5} fontSize={32} color={'red.600'}>{cardTitle}</Flex>
+            isEmpty(tableData) ? <Flex alignItems={'baseline'}>There are not
+              <Flex ml={5} fontSize={32} color={'red.600'}>{cardTitle}</Flex>
               's BID list</Flex>
               :
-              <Flex><Flex ml={5} mr={5} fontSize={32} color={'red.600'}>{cardTitle}</Flex>
+              <Flex alignItems={'baseline'}><Flex ml={5} fontSize={32} color={'red.600'}>{cardTitle}</Flex>
                 's BID list</Flex>
           }
         </Flex>
-        <Button onClick={onOpen} leftIcon={<AddIcon />} colorScheme={'red'} size={'sm'} borderRadius={5}>BID</Button>
-        <Modal
-          initialFocusRef={initialRef}
-          finalFocusRef={finalRef}
-          isOpen={isOpen}
-          onClose={onClose}
-        >
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Create your account</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody pb={6}>
-              <form id="inputbox" method="POST" onSubmit={sendBid} autoComplete={'off'}>
-                <FormControl>
-                  <FormLabel>Client Name</FormLabel>
-                  <Input
-                    placeholder='client name'
-                    value={name}
-                    onChange={e => setName(e.target.value)}
-                  />
-                </FormControl>
-
-                <FormControl mt={4}>
-                  <FormLabel>Client Country</FormLabel>
-                  <Input
-                    placeholder='Client Country'
-                    value={country}
-                    onChange={e => setCountry(e.target.value)}
-                  />
-                </FormControl>
-                <FormControl mt={4}>
-                  <FormLabel>Join Date</FormLabel>
-                  <Input
-                    placeholder="Joindate"
-                    size="md"
-                    type="datetime-local"
-                    value={jdate}
-                    onChange={e => setJdate(e.target.value)}
-                  />
-                </FormControl>
-                <FormControl mt={4}>
-                  <FormLabel>Bid Date</FormLabel>
-                  <Input
-                    placeholder="Bid Date"
-                    size="md"
-                    type="datetime-local"
-                    value={bdate}
-                    onChange={e => setBdate(e.target.value)}
-                  />
-                </FormControl>
-                <FormControl mt={4}>
-                  <FormLabel>Bid Count</FormLabel>
-                  <Input
-                    placeholder='Bid Count'
-                    value={count}
-                    onChange={e => setCount(e.target.value)}
-                  />
-                </FormControl>
-                <FormControl mt={4}>
-                  <FormLabel>Payment</FormLabel>
-                  <Select onChange={e => setPayment(e.target.value)}>
-                    <option value='1'>verify</option>
-                    <option value='0'>none verify</option>
-                  </Select>
-                </FormControl>
-                <FormControl mt={4}>
-                  <FormLabel>BID Content</FormLabel>
-                  <Textarea
-                    placeholder='Here is a sample placeholder'
-                    size='sm'
-                    value={content}
-                    onChange={e => setContent(e.target.value)}
-                  />
-                </FormControl>
-                <FormControl mt={4}>
-                  <FormLabel>Task URL</FormLabel>
-                  <Input
-                    placeholder='URL'
-                    value={url}
-                    onChange={e => setUrl(e.target.value)}
-                  />
-                </FormControl>
-              </form>
-            </ModalBody>
-
-            <ModalFooter>
-              <Button colorScheme='blue' mr={3} onClick={sendBid}>
-                Save
-              </Button>
-              <Button onClick={onClose}>Cancel</Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+        <Button mr={'2rem'} onClick={AddBID} leftIcon={<AddIcon />} colorScheme={'red'} size={'sm'} borderRadius={5}>BID</Button>
       </Flex>
       {
         !isEmpty(tableData) ?
-          <Table {...getTableProps()} variant='simple' color='gray.500' display={'table'} overflow={'auto'} p='1rem' width={'auto'}>
+          <Table
+            {...getTableProps()}
+            variant='simple'
+            color='gray.500'
+            display={'flow-root'}
+            overflow={'auto'}
+            p='1rem'
+            width={'auto'}
+            height={'100%'}
+            mr={'1rem'}
+          >
             <Thead>
               {headerGroups.map((headerGroup, index) => (
                 <Tr {...headerGroup.getHeaderGroupProps()} key={index}>
@@ -263,17 +169,19 @@ export default function ColumnsTable(props: TableProps) {
               {page.map((row, index) => {
                 prepareRow(row)
                 return (
-                  <Tr {...row.getRowProps()} key={index}>
+                  <Tr {...row.getRowProps()} key={index} onClick={() => EditBID(row.original)} cursor={'pointer'}>
                     {row.cells.map((cell, index) => {
                       let data
-                      if (cell.column.Header === 'ClientName') {
+                      if (cell.column.Header === 'Client') {
                         data = (
-                          <Flex align='center'>
+                          <Flex align='center' cursor={'pointer'}>
                             <Text
                               me='10px'
                               color={textColor}
                               fontSize='sm'
                               fontWeight='700'
+                              minW={'max-content'}
+                              onClick={() => DisplayDetailData(cell.row.original.bid_content, cell.row.original.chat_content)}
                             >
                               {cell.value}
                             </Text>
@@ -281,17 +189,25 @@ export default function ColumnsTable(props: TableProps) {
                         )
                       } else if (cell.column.Header === 'Country') {
                         data = (
-                          <Text color={textColor} fontSize='sm' fontWeight='700'>
-                            {cell.value}
-                          </Text>
+                          <Flex align='center' cursor={'pointer'}>
+                            <Text color={textColor} fontSize='sm' fontWeight='700' minW={'max-content'}>
+                              {cell.value}
+                            </Text>
+                          </Flex>
                         )
                       } else if (cell.column.Header === 'JoinDate') {
                         data = (
                           <Text color={textColor} fontSize='sm' fontWeight='700'>
-                            {cell.value}
+                            {moment(cell.value).format('MM/DD/YYYY')}
                           </Text>
                         )
                       } else if (cell.column.Header === 'BidDate') {
+                        data = (
+                          <Text color={textColor} fontSize='sm' fontWeight='700'>
+                            {moment(cell.value).format('MM/DD/YYYY')}
+                          </Text>
+                        )
+                      } else if (cell.column.Header === 'Proposals') {
                         data = (
                           <Text color={textColor} fontSize='sm' fontWeight='700'>
                             {cell.value}
@@ -300,126 +216,108 @@ export default function ColumnsTable(props: TableProps) {
                       } else if (cell.column.Header === 'Verified') {
                         data = (
                           <Text color={cell.value ? alarmColor : textColor} fontSize='sm' fontWeight='700'>
-                            {cell.value ? 'Verified' : ''}
+                            {cell.value ? <CheckIcon /> : ''}
                           </Text>
                         )
                       } else if (cell.column.Header === 'Message') {
                         data = (
                           <Text color={cell.value ? alarmColor : textColor} fontSize='sm' fontWeight='700'>
-                            {cell.value ? 'Message' : ''}
+                            {cell.value ? <CheckIcon /> : ''}
                           </Text>
                         )
-                      } else if (cell.column.Header === 'Finished') {
+                      } else if (cell.column.Header === 'Hired') {
                         data = (
                           <Text color={cell.value ? alarmColor : textColor} fontSize='sm' fontWeight='700'>
-                            {cell.value ? 'Finished' : ''}
+                            {cell.value ? <CheckIcon /> : ''}
                           </Text>
                         )
                       } else if (cell.column.Header === 'TaskURL') {
                         data = (
-                          <Text color={textColor} fontSize='sm' fontWeight='700'>
-                            {cell.value}
-                          </Text>
+                          <Link href={cell.value} fontSize='sm' fontWeight='700' color={textColor} isExternal>
+                            <Text maxW={110} overflow={'hidden'} textOverflow={'ellipsis'} whiteSpace={'nowrap'}>{cell.value}</Text>
+                          </Link>
                         )
                       } else if (cell.column.Header === 'Action') {
                         data = (
                           <Flex>
-                            <IconButton icon={<EditIcon />} colorScheme={'messenger'} size={'sm'} aria-label={''} />
-                            <Button onClick={onOpen} leftIcon={<AddIcon />} colorScheme={'red'} size={'sm'} borderRadius={5}>BID</Button>
-                            <Modal
-                              initialFocusRef={initialRef}
-                              finalFocusRef={finalRef}
-                              isOpen={isOpen}
-                              onClose={onClose}
-                            >
-                              <ModalOverlay />
-                              <ModalContent>
-                                <ModalHeader>Create your account</ModalHeader>
-                                <ModalCloseButton />
-                                <ModalBody pb={6}>
-                                  <form id="inputbox" method="POST" onSubmit={sendBid} autoComplete={'off'}>
-                                    <FormControl>
-                                      <FormLabel>Client Name</FormLabel>
-                                      <Input
-                                        placeholder='client name'
-                                        value={name}
-                                        onChange={e => setName(e.target.value)}
-                                      />
-                                    </FormControl>
-
-                                    <FormControl mt={4}>
-                                      <FormLabel>Client Country</FormLabel>
-                                      <Input
-                                        placeholder='Client Country'
-                                        value={country}
-                                        onChange={e => setCountry(e.target.value)}
-                                      />
-                                    </FormControl>
-                                    <FormControl mt={4}>
-                                      <FormLabel>Join Date</FormLabel>
-                                      <Input
-                                        placeholder="Joindate"
-                                        size="md"
-                                        type="datetime-local"
-                                        value={jdate}
-                                        onChange={e => setJdate(e.target.value)}
-                                      />
-                                    </FormControl>
-                                    <FormControl mt={4}>
-                                      <FormLabel>Bid Date</FormLabel>
-                                      <Input
-                                        placeholder="Bid Date"
-                                        size="md"
-                                        type="datetime-local"
-                                        value={bdate}
-                                        onChange={e => setBdate(e.target.value)}
-                                      />
-                                    </FormControl>
-                                    <FormControl mt={4}>
-                                      <FormLabel>Bid Count</FormLabel>
-                                      <Input
-                                        placeholder='Bid Count'
-                                        value={count}
-                                        onChange={e => setCount(e.target.value)}
-                                      />
-                                    </FormControl>
-                                    <FormControl mt={4}>
-                                      <FormLabel>Payment</FormLabel>
-                                      <Select onChange={e => setPayment(e.target.value)}>
-                                        <option value='1'>verify</option>
-                                        <option value='0'>none verify</option>
-                                      </Select>
-                                    </FormControl>
-                                    <FormControl mt={4}>
-                                      <FormLabel>BID Content</FormLabel>
-                                      <Textarea
-                                        placeholder='Here is a sample placeholder'
-                                        size='sm'
-                                        value={content}
-                                        onChange={e => setContent(e.target.value)}
-                                      />
-                                    </FormControl>
-                                    <FormControl mt={4}>
-                                      <FormLabel>Task URL</FormLabel>
-                                      <Input
-                                        placeholder='URL'
-                                        value={url}
-                                        onChange={e => setUrl(e.target.value)}
-                                      />
-                                    </FormControl>
-                                  </form>
-                                </ModalBody>
-
-                                <ModalFooter>
-                                  <Button colorScheme='blue' mr={3} onClick={sendBid}>
-                                    Save
-                                  </Button>
-                                  <Button onClick={onClose}>Cancel</Button>
-                                </ModalFooter>
-                              </ModalContent>
-                            </Modal>
-                            <IconButton icon={<DeleteIcon />} colorScheme={'messenger'} size={'sm'} aria-label={''} />
-                            <Button ml={1} leftIcon={<AddIcon />} colorScheme={'messenger'} size={'sm'}>chat</Button>
+                            {/* <Tooltip label='Add Chat'>
+                              <IconButton
+                                icon={<AddIcon />}
+                                colorScheme={'messenger'}
+                                size={'sm'}
+                                aria-label={''}
+                                onClick={() => {
+                                  setSelectBIDId(cell.row.original.id)
+                                  setBeforeChatContent(cell.row.original.chat_content)
+                                  setInsertChatFlag(true)
+                                }}
+                              />
+                            </Tooltip> */}
+                            <Tooltip label='Edit BID'>
+                              <IconButton
+                                ml={1}
+                                icon={<EditIcon />}
+                                colorScheme={'messenger'}
+                                size={'sm'}
+                                aria-label={''}
+                                onClick={() => EditBID(cell.row.original)}
+                              />
+                            </Tooltip>
+                            <Tooltip label='Delete BID'>
+                              <Popover
+                                initialFocusRef={initialFocusRef}
+                                placement='bottom'
+                                closeOnBlur={false}
+                              >
+                                {({ isOpen, onClose }) => (
+                                  <>
+                                    <PopoverTrigger>
+                                      <IconButton ml={1} icon={<DeleteIcon />} colorScheme={'red'} size={'sm'} aria-label={''} />
+                                    </PopoverTrigger>
+                                    <PopoverContent color='white' bg='blue.800' borderColor='blue.800'>
+                                      <PopoverHeader pt={4} fontWeight='bold' border='0'>
+                                        Delete Your BID
+                                      </PopoverHeader>
+                                      <PopoverArrow />
+                                      <PopoverCloseButton />
+                                      <PopoverBody>
+                                        Delete the data by clicking the Delete button.
+                                        However, this data still exists in the database.
+                                      </PopoverBody>
+                                      <PopoverFooter
+                                        border='0'
+                                        display='flex'
+                                        alignItems='center'
+                                        justifyContent='end'
+                                        pb={4}
+                                      >
+                                        <ButtonGroup size='sm'>
+                                          <Button
+                                            colorScheme='green'
+                                            onClick={() => {
+                                              axios.delete(backendURL + '/bid/' + cell.row.original.id)
+                                                .then(res => {
+                                                  console.log(res)
+                                                  getBIDList()
+                                                })
+                                                .catch(err => {
+                                                  console.log(err)
+                                                })
+                                              onClose()
+                                            }}
+                                          >
+                                            Delete
+                                          </Button>
+                                          <Button colorScheme='blue' ref={initialFocusRef} onClick={onClose}>
+                                            Cancel
+                                          </Button>
+                                        </ButtonGroup>
+                                      </PopoverFooter>
+                                    </PopoverContent>
+                                  </>
+                                )}
+                              </Popover>
+                            </Tooltip>
                           </Flex>
                         )
                       }
@@ -443,6 +341,25 @@ export default function ColumnsTable(props: TableProps) {
           :
           null
       }
+      <BID
+        selectID={selectID}
+        data={selectData}
+        flag={modalFlag}
+        type={actionType}
+        closeModal={CloseModal}
+      />
+      <ChatList
+        bid={datailBIDData}
+        chat={datailChatData}
+        flag={detailFlag}
+        closeModal={CloseModal}
+      />
+      <InsertChat
+        selectID={selectBIDId}
+        chat={beforeChatContent}
+        flag={insertChatFlag}
+        closeModal={CloseModal}
+      />
     </Card>
   )
 }
