@@ -55,4 +55,7 @@ export type TableProps = {
   tableData?: TableData[];
   cardTitle?: string;
   setFilter?: any;
+  setID?: any;
+  selectID?: string;
+  getBIDList?: any;
 };

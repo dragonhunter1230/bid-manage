@@ -19,13 +19,13 @@ import SignInCentered from 'pages/auth/sign-in'
 import { IRoute } from 'types/navigation'
 
 const routes: IRoute[] = [
-  {
-    name: 'Main Dashboard',
-    layout: '/admin',
-    path: '/default',
-    icon: <Icon as={MdHome} width='20px' height='20px' color='inherit' />,
-    component: MainDashboard
-  },
+  // {
+  //   name: 'Main Dashboard',
+  //   layout: '/admin',
+  //   path: '/default',
+  //   icon: <Icon as={MdHome} width='20px' height='20px' color='inherit' />,
+  //   component: MainDashboard
+  // },
   // {
   //   name: 'NFT Marketplace',
   //   layout: '/admin',
@@ -48,27 +48,27 @@ const routes: IRoute[] = [
   //   path: '/data-tables',
   //   component: DataTables
   // },
+  // {
+  //   name: 'Member Manage',
+  //   layout: '/admin',
+  //   icon: <Icon as={MdOutlinePeople} width='20px' height='20px' color='inherit' />,
+  //   path: '/user-manage',
+  //   component: DataTables
+  // },
   {
-    name: 'Member Manage',
-    layout: '/admin',
-    icon: <Icon as={MdOutlinePeople} width='20px' height='20px' color='inherit' />,
-    path: '/user-manage',
-    component: DataTables
-  },
-  {
-    name: 'BID Stastics',
-    layout: '/admin',
-    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
-    path: '/bid-stastics',
-    component: DataTables
-  },
-  {
-    name: 'Chat Stastics',
+    name: 'BID History',
     layout: '/admin',
     icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
-    path: '/chat-stastics',
+    path: '/bid-history',
     component: DataTables
   },
+  // {
+  //   name: 'Chat Stastics',
+  //   layout: '/admin',
+  //   icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
+  //   path: '/chat-stastics',
+  //   component: DataTables
+  // },
   // {
   //   name: 'Profile',
   //   layout: '/admin',
@@ -76,13 +76,13 @@ const routes: IRoute[] = [
   //   icon: <Icon as={MdPerson} width='20px' height='20px' color='inherit' />,
   //   component: Profile
   // },
-  {
-    name: 'Sign In',
-    layout: '/auth',
-    path: '/sign-in',
-    icon: <Icon as={MdLock} width='20px' height='20px' color='inherit' />,
-    component: SignInCentered
-  },
+  // {
+  //   name: 'Sign In',
+  //   layout: '/auth',
+  //   path: '/sign-in',
+  //   icon: <Icon as={MdLock} width='20px' height='20px' color='inherit' />,
+  //   component: SignInCentered
+  // },
   // {
   //   name: 'RTL Admin',
   //   layout: '/rtl',

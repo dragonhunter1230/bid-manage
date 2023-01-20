@@ -10,7 +10,9 @@ import {
   useColorModeValue,
   SimpleGrid,
   Link,
-  useFocusEffect
+  useFocusEffect,
+  FormControl,
+  GridItem
 } from '@chakra-ui/react'
 
 // Custom components
@@ -29,59 +31,70 @@ import MiniCalendar from 'components/calendar/MiniCalendar'
 import { isEmpty } from '@chakra-ui/utils'
 import axios from 'axios'
 import { backendURL } from 'utils/constants'
+import { AddIcon } from '@chakra-ui/icons'
+import { headers } from '../../../next.config'
 export default function NftMarketplace() {
   // Chakra Color Mode
-  const textColor = useColorModeValue('secondaryGray.900', 'white')
-  const textColorBrand = useColorModeValue('brand.500', 'white')
-  const [cardTitle, setCardTitle] = useState('Today')
+
   const [selectUser, setSelectUser] = useState('')
+  const [selectUserID, setSelectUserID] = useState('')
   const [userList, setUserList] = useState([])
+  const [bidList, setBidList] = useState([])
 
   useEffect(() => {
-    axios.get(backendURL+'/user')
-      .then(res => setUserList(res.data))
-  },[])
+    axios.get(backendURL + '/user')
+      .then(res => {
+        setUserList(res.data.data)
+      })
+      .catch(err => { console.log("2342343:", err); })
+  }, [])
+
+  const getBIDList = () => {
+    axios.get(`${backendURL}/bid/${selectUserID}`)
+      .then(res => {
+        if (res.data.data) {
+          setBidList(res.data.data)
+        } else {
+          setBidList([])
+        }
+      })
+      .catch(err => console.log(err))
+  }
+
+  useEffect(() => {
+    if (!isEmpty(selectUserID)) {
+      getBIDList()
+    }
+  }, [selectUserID])
+
   return (
     <AdminLayout>
-      <Box pt={{ base: '180px', md: '80px', xl: '80px' }}>
-        {/* Main Fields */}
+      <Box pt={{ base: '180px', md: '80px', xl: '80px' }} minH={'93vh'}>
         <Grid
-          mb='20px'
-          gridTemplateColumns={{ xl: 'repeat(4, 1fr)' }}
-          gap={{ base: '20px', xl: '20px' }}
-          display={{ base: 'block', xl: 'grid' }}
+          templateAreas={`"nav main"`}
+          gridTemplateRows={'50px 1fr 30px'}
+          gridTemplateColumns={'340px 1fr'}
+          h='200px'
+          gap='1'
+          color='blackAlpha.700'
+          fontWeight='bold'
         >
-          <Flex
-            flexDirection='column'
-            gridArea={{ xl: '1 / 1 / 4 / 2' }}
-          >
-            <MiniCalendar h='100%' minW='100%' selectRange={false} />
-            <Card mt='20px' mb='20px'>
+          <GridItem area={'nav'}>
+            <Card>
               <TeamMemmbers
                 tableData={(userList as unknown) as TableData[]}
                 columnsData={tableColumnsTeamMembers}
                 cardTitle={'Team members'}
                 setFilter={setSelectUser}
+                setID={setSelectUserID}
+                selectID={selectUserID}
               />
             </Card>
-          </Flex>
-          <Flex
-            flexDirection='column'
-            gridArea={{ xl: '1 / 2 / 4 / 5' }}
-          >
-            {
-              !isEmpty(selectUser) ?
-                <ColumnsTableBID
-                  columnsData={columnsDataBID}
-                  tableData={(tableDataBID as unknown) as TableData[]}
-                  cardTitle={`${selectUser}'s BID Table`}
-                />
-                :
-                null
-            }
-          </Flex>
+          </GridItem>
+          <GridItem ml={6} area={'main'}>
+            {!isEmpty(selectUser) && <ColumnsTableBID columnsData={columnsDataBID} tableData={(bidList as unknown) as TableData[]} cardTitle={selectUser} selectID={selectUserID} getBIDList={getBIDList} />}
+          </GridItem>
         </Grid>
-        {/* Delete Product */}
       </Box>
     </AdminLayout>
   )
