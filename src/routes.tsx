@@ -56,10 +56,10 @@ const routes: IRoute[] = [
   //   component: DataTables
   // },
   {
-    name: 'BID Stastics',
+    name: 'BID History',
     layout: '/admin',
     icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
-    path: '/bid-stastics',
+    path: '/bid-history',
     component: DataTables
   },
   // {

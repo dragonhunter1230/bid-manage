@@ -22,7 +22,10 @@ import {
   PopoverTrigger,
   Box,
   ButtonGroup,
-  PopoverFooter
+  PopoverFooter,
+  Input,
+  Grid,
+  GridItem
 } from '@chakra-ui/react'
 
 import React, { useMemo, useState, useEffect } from 'react'
@@ -43,8 +46,8 @@ import { backendURL } from 'utils/constants'
 import { isEmpty } from '@chakra-ui/utils'
 import moment from 'moment'
 import BID from 'components/bid/bid'
-import ChatList from 'components/chat/chatList'
-import InsertChat from 'components/chat/insertChat'
+import { format } from 'date-fns'
+
 export default function ColumnsTable(props: TableProps): JSX.Element {
   const { columnsData, tableData, cardTitle, selectID, getBIDList } = props
 
@@ -54,12 +57,8 @@ export default function ColumnsTable(props: TableProps): JSX.Element {
   const [actionType, setActionType] = useState(true)
   const [selectData, setSelectData] = useState({})
   const [modalFlag, setModalFlag] = useState(false)
-  const [datailBIDData, setDetailBIDData] = useState('')
-  const [datailChatData, setDetailChatData] = useState('')
-  const [detailFlag, setDetailFlag] = useState(false)
-  const [insertChatFlag, setInsertChatFlag] = useState(false)
-  const [selectBIDId, setSelectBIDId] = useState(null)
-  const [beforeChatContent, setBeforeChatContent] = useState('')
+  const [selectDate, setSelectDate] = useState('')
+
   const tableInstance = useTable(
     {
       columns,
@@ -84,6 +83,11 @@ export default function ColumnsTable(props: TableProps): JSX.Element {
   const borderColor = useColorModeValue('gray.200', 'whiteAlpha.100')
   const alarmColor = useColorModeValue('green.500', 'green')
 
+  useEffect(() => {
+    console.log(format(new Date(), 'yyyy-MM-dd'), data)
+    setSelectDate(format(new Date(), 'yyyy-MM-dd'))
+  }, [])
+
   const AddBID = () => {
     setActionType(true)
     setModalFlag(true)
@@ -98,15 +102,7 @@ export default function ColumnsTable(props: TableProps): JSX.Element {
 
   const CloseModal = () => {
     setModalFlag(false)
-    setDetailFlag(false)
-    setInsertChatFlag(false)
     getBIDList()
-  }
-
-  const DisplayDetailData = (bid: string, chat: string) => {
-    setDetailBIDData(bid)
-    setDetailChatData(chat)
-    setDetailFlag(true)
   }
 
   return (
@@ -116,19 +112,54 @@ export default function ColumnsTable(props: TableProps): JSX.Element {
       px='0px'
       overflowX={{ sm: 'scroll', lg: 'hidden' }}
     >
-      <Flex px='25px' justify='space-between' align='center' mt={'1rem'}>
+      <Grid
+        templateColumns='repeat(5, 1fr)'
+        gap={4}
+        alignItems='center'
+      >
+        <GridItem colSpan={3}>
+          <Flex justifyContent={'start'} fontSize={28} pl={5}>
+            {
+              <Flex alignItems={'baseline'}>
+                <Flex ml={5} fontSize={32} color={'red.600'}>{cardTitle}</Flex>
+                's BID list
+              </Flex>
+            }
+          </Flex>
+        </GridItem>
+        <GridItem colSpan={1}>
+          <Input
+            placeholder="Select Date and Time"
+            size="md"
+            type="date-local"
+            maxW={150}
+            value={selectDate}
+            onChange={(e) => setSelectDate(e.target.value)}
+          />
+        </GridItem>
+        <GridItem colSpan={1}>
+          <Button mr={'2rem'} onClick={AddBID} leftIcon={<AddIcon />} colorScheme={'red'} size={'sm'} borderRadius={5}>BID</Button>
+        </GridItem>
+      </Grid>
+      {/* <Flex px='25px' justify='space-between' align='center' mt={'1rem'}>
         <Flex justifyContent={'space-evenly'} fontSize={28} alignItems={'baseline'}>
           {
-            isEmpty(tableData) ? <Flex alignItems={'baseline'}>There are not
+            <Flex alignItems={'baseline'}>
               <Flex ml={5} fontSize={32} color={'red.600'}>{cardTitle}</Flex>
-              's BID list</Flex>
-              :
-              <Flex alignItems={'baseline'}><Flex ml={5} fontSize={32} color={'red.600'}>{cardTitle}</Flex>
-                's BID list</Flex>
+              's BID list
+            </Flex>
           }
         </Flex>
+        <Input
+          placeholder="Select Date and Time"
+          size="md"
+          type="date-local"
+          maxW={150}
+          value={selectDate}
+          onChange={(e) => setSelectDate(e.target.value)}
+        />
         <Button mr={'2rem'} onClick={AddBID} leftIcon={<AddIcon />} colorScheme={'red'} size={'sm'} borderRadius={5}>BID</Button>
-      </Flex>
+      </Flex> */}
       {
         !isEmpty(tableData) ?
           <Table
@@ -169,19 +200,18 @@ export default function ColumnsTable(props: TableProps): JSX.Element {
               {page.map((row, index) => {
                 prepareRow(row)
                 return (
-                  <Tr {...row.getRowProps()} key={index} onClick={() => EditBID(row.original)} cursor={'pointer'}>
+                  <Tr {...row.getRowProps()} key={index} cursor={'pointer'}>
                     {row.cells.map((cell, index) => {
                       let data
                       if (cell.column.Header === 'Client') {
                         data = (
-                          <Flex align='center' cursor={'pointer'}>
+                          <Flex align='center' cursor={'pointer'} onClick={() => EditBID(row.original)} >
                             <Text
                               me='10px'
                               color={textColor}
                               fontSize='sm'
                               fontWeight='700'
                               minW={'max-content'}
-                              onClick={() => DisplayDetailData(cell.row.original.bid_content, cell.row.original.chat_content)}
                             >
                               {cell.value}
                             </Text>
@@ -189,7 +219,7 @@ export default function ColumnsTable(props: TableProps): JSX.Element {
                         )
                       } else if (cell.column.Header === 'Country') {
                         data = (
-                          <Flex align='center' cursor={'pointer'}>
+                          <Flex align='center' cursor={'pointer'} onClick={() => EditBID(row.original)} >
                             <Text color={textColor} fontSize='sm' fontWeight='700' minW={'max-content'}>
                               {cell.value}
                             </Text>
@@ -197,37 +227,37 @@ export default function ColumnsTable(props: TableProps): JSX.Element {
                         )
                       } else if (cell.column.Header === 'JoinDate') {
                         data = (
-                          <Text color={textColor} fontSize='sm' fontWeight='700'>
+                          <Text color={textColor} fontSize='sm' fontWeight='700' onClick={() => EditBID(row.original)} >
                             {moment(cell.value).format('MM/DD/YYYY')}
                           </Text>
                         )
                       } else if (cell.column.Header === 'BidDate') {
                         data = (
-                          <Text color={textColor} fontSize='sm' fontWeight='700'>
+                          <Text color={textColor} fontSize='sm' fontWeight='700' onClick={() => EditBID(row.original)} >
                             {moment(cell.value).format('MM/DD/YYYY')}
                           </Text>
                         )
                       } else if (cell.column.Header === 'Proposals') {
                         data = (
-                          <Text color={textColor} fontSize='sm' fontWeight='700'>
+                          <Text color={textColor} fontSize='sm' fontWeight='700' onClick={() => EditBID(row.original)} >
                             {cell.value}
                           </Text>
                         )
                       } else if (cell.column.Header === 'Verified') {
                         data = (
-                          <Text color={cell.value ? alarmColor : textColor} fontSize='sm' fontWeight='700'>
+                          <Text color={cell.value ? alarmColor : textColor} fontSize='sm' fontWeight='700' onClick={() => EditBID(row.original)} >
                             {cell.value ? <CheckIcon /> : ''}
                           </Text>
                         )
                       } else if (cell.column.Header === 'Message') {
                         data = (
-                          <Text color={cell.value ? alarmColor : textColor} fontSize='sm' fontWeight='700'>
+                          <Text color={cell.value ? alarmColor : textColor} fontSize='sm' fontWeight='700' onClick={() => EditBID(row.original)} >
                             {cell.value ? <CheckIcon /> : ''}
                           </Text>
                         )
                       } else if (cell.column.Header === 'Hired') {
                         data = (
-                          <Text color={cell.value ? alarmColor : textColor} fontSize='sm' fontWeight='700'>
+                          <Text color={cell.value ? alarmColor : textColor} fontSize='sm' fontWeight='700' onClick={() => EditBID(row.original)} >
                             {cell.value ? <CheckIcon /> : ''}
                           </Text>
                         )
@@ -267,7 +297,6 @@ export default function ColumnsTable(props: TableProps): JSX.Element {
                               <Popover
                                 initialFocusRef={initialFocusRef}
                                 placement='bottom'
-                                closeOnBlur={false}
                               >
                                 {({ isOpen, onClose }) => (
                                   <>
@@ -281,8 +310,7 @@ export default function ColumnsTable(props: TableProps): JSX.Element {
                                       <PopoverArrow />
                                       <PopoverCloseButton />
                                       <PopoverBody>
-                                        Delete the data by clicking the Delete button.
-                                        However, this data still exists in the database.
+                                        Are you sure delete BID?
                                       </PopoverBody>
                                       <PopoverFooter
                                         border='0'
@@ -346,18 +374,7 @@ export default function ColumnsTable(props: TableProps): JSX.Element {
         data={selectData}
         flag={modalFlag}
         type={actionType}
-        closeModal={CloseModal}
-      />
-      <ChatList
-        bid={datailBIDData}
-        chat={datailChatData}
-        flag={detailFlag}
-        closeModal={CloseModal}
-      />
-      <InsertChat
-        selectID={selectBIDId}
-        chat={beforeChatContent}
-        flag={insertChatFlag}
+        getBIDList={getBIDList}
         closeModal={CloseModal}
       />
     </Card>

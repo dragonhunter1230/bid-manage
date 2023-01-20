@@ -24,12 +24,18 @@ import {
     Switch,
     Flex,
     Box,
+    AlertDialog,
+    AlertDialogBody,
+    AlertDialogContent,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogOverlay,
 } from '@chakra-ui/react'
 import { isEmpty } from '@chakra-ui/utils'
 import axios from 'axios'
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
-import { backendURL } from 'utils/constants'
+import { backendURL, countryList } from 'utils/constants'
 import { format } from 'date-fns'
 // Custom components
 
@@ -52,18 +58,21 @@ export default function Default(props: {
     }
     flag: boolean
     type: boolean
+    getBIDList: () => void
     closeModal: () => void
 }): JSX.Element {
-    const { selectID, data, flag, type, closeModal } = props
+
+    const { selectID, data, flag, type, closeModal, getBIDList } = props
 
     const initialRef = React.useRef(null)
     const finalRef = React.useRef(null)
+    const cancelRef = React.useRef(null)
 
     const [name, setName] = useState('')
     const [country, setCountry] = useState('')
     const [jdate, setJdate] = useState('')
     const [bdate, setBdate] = useState('')
-    const [count, setCount] = useState(null)
+    const [count, setCount] = useState(0)
     const [content, setContent] = useState('')
     const [url, setUrl] = useState('')
     const [payment, setPayment] = useState(1)
@@ -71,40 +80,55 @@ export default function Default(props: {
     const [messageFlag, setMessageFlag] = useState(false)
     const [hiredFlag, setHiredFlag] = useState(false)
     const [newChat, setNewChat] = useState('')
+    const [alertFlag, setAlertFlag] = useState(false)
+    const [alertContent, setAlertContent] = useState('')
+    const [alertTitle, setAlertTitle] = useState('')
+
+    const initialStateBID = () => {
+        setName('')
+        setCountry('')
+        setJdate('')
+        setBdate('')
+        setCount(0)
+        setContent('')
+        setUrl('')
+        setChatContent('')
+        setPayment(1)
+        setChatContent('')
+        setMessageFlag(false)
+        setHiredFlag(false)
+    }
+
+    const initialStateChat = (BidData: any) => {
+        setName(BidData.client_name)
+        setCountry(BidData.client_country)
+        setJdate(format(new Date(BidData.join_date), 'yyyy-MM-dd'))
+        setBdate(format(new Date(BidData.bid_date), 'yyyy-MM-dd'))
+        setCount(BidData.bid_count)
+        setContent(BidData.bid_content)
+        setUrl(BidData.task_url)
+        setChatContent(BidData.chat_content)
+        setPayment(BidData.payment_flag)
+        setMessageFlag(BidData.message_flag ? true : false)
+        setHiredFlag(BidData.finished_flag ? true : false)
+    }
 
     useEffect(() => {
-        console.log('bid-type:', type)
+        setNewChat('')
+    }, [])
+
+    useEffect(() => {
+        console.log('bid-type:', type, ':', data)
         switch (type) {
             case true:
-                setName('')
-                setCountry('')
-                setJdate('')
-                setBdate('')
-                setCount('')
-                setContent('')
-                setUrl('')
-                setChatContent('')
-                setPayment(1)
-                setChatContent('')
-                setMessageFlag(false)
-                setHiredFlag(false)
+                initialStateBID()
                 return
             case false:
-                setName(data.client_name)
-                setCountry(data.client_country)
-                setJdate(format(new Date(data.join_date), 'yyyy-MM-dd'))
-                setBdate(format(new Date(data.bid_date), 'yyyy-MM-dd'))
-                setCount(data.bid_count)
-                setContent(data.bid_content)
-                setUrl(data.task_url)
-                setChatContent(data.chat_content)
-                setPayment(data.payment_flag)
-                setMessageFlag(data.message_flag ? true : false)
-                setHiredFlag(data.finished_flag ? true : false)
+                initialStateChat(data)
         }
     }, [data, type])
 
-    const onClickBtn = () => {
+    const addNewBID = () => {
         if (isEmpty(selectID)) {
             return;
         } else if (isEmpty(name)) {
@@ -143,16 +167,8 @@ export default function Default(props: {
 
             axios.post(backendURL + '/bid', newData)
                 .then(res => {
-                    //console.log(res)
-                    setName('')
-                    setCountry('')
-                    setJdate('')
-                    setBdate('')
-                    setCount('')
-                    setContent('')
-                    setUrl('')
-                    setChatContent('')
-                    setPayment(1)
+
+                    initialStateBID()
                     closeModal()
                 })
                 .catch(err => console.log(err))
@@ -177,15 +193,7 @@ export default function Default(props: {
             axios.put(backendURL + `/bid/${data.id}`, newData)
                 .then(res => {
                     //console.log(res)
-                    setName('')
-                    setCountry('')
-                    setJdate('')
-                    setBdate('')
-                    setCount('')
-                    setContent('')
-                    setUrl('')
-                    setChatContent('')
-                    setPayment(1)
+                    initialStateBID()
                     closeModal()
                 })
                 .catch(err => console.log(err))
@@ -194,12 +202,65 @@ export default function Default(props: {
     }
 
     const addNewChat = () => {
-        axios.put(backendURL + `/bid/${data.id}`, { chat_content: chatContent + '#' + newChat })
+        if (isEmpty(newChat)) {
+            setAlertFlag(true)
+            setAlertTitle('Warning')
+            setAlertContent('The "newChat" yard is empty.')
+            setTimeout(() => {
+                setAlertFlag(false)
+            }, 1500);
+            return;
+        }
+        axios.put(backendURL + `/bid/${data.id}`, { chat_content: chatContent + newChat + '\n' })
             .then(() => {
-                console.log(chatContent + newChat)
-                setChatContent((prev) => prev + newChat)
+                axios.get(`${backendURL}/bid/${selectID}`)
+                    .then(res => {
+                        setChatContent(res.data.data.find((value: any) => { return value.id === data.id }).chat_content)
+                        setNewChat('')
+                    })
+                    .catch(err => console.log(err))
             })
             .catch(err => console.log(err))
+    }
+
+    const changeMessage = () => {
+        setMessageFlag(!messageFlag)
+        if (messageFlag) {
+            setHiredFlag(false)
+        }
+        axios.put(backendURL + `/bid/${data.id}`, {
+            message_flag: !messageFlag,
+            finished_flag: messageFlag ? false : hiredFlag,
+        })
+            .then(() => {
+                setAlertFlag(true)
+                setAlertTitle('Success!')
+                setAlertContent('The "message" yard has been successfully changed.')
+                setTimeout(() => {
+                    setAlertFlag(false)
+                }, 1000);
+            })
+            .catch(err => console.log(err))
+    }
+
+    const changeHired = () => {
+        setHiredFlag(!hiredFlag)
+        axios.put(backendURL + `/bid/${data.id}`, {
+            finished_flag: !hiredFlag,
+        })
+            .then(() => {
+                setAlertFlag(true)
+                setAlertTitle('Success!')
+                setAlertContent('The "hired" yard has been successfully changed.')
+                setTimeout(() => {
+                    setAlertFlag(false)
+                }, 1000);
+            })
+            .catch(err => console.log(err))
+    }
+
+    const closeAlert = () => {
+        setAlertFlag(false)
     }
 
     return (
@@ -208,41 +269,50 @@ export default function Default(props: {
             finalFocusRef={finalRef}
             isOpen={flag}
             onClose={closeModal}
-            size="4xl"
+            size={type ? '2xl' : '4xl'}
             closeOnOverlayClick={false}
         >
             <ModalOverlay />
             <ModalContent>
-                <ModalHeader>{type ? 'Create your BID' : 'Edit your BID'}</ModalHeader>
+                <ModalHeader>{type ? 'Create Your BID' : 'Edit Your BID'}</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={6}>
-                    <Grid gridTemplateColumns={{ md: 'repeat(2, 1fr)' }} gap={{ base: '20px', md: '20px' }}>
+                    <Grid templateColumns={{ md: `repeat(${type ? 1 : 2}, 1fr)` }} gap={{ base: '20px', md: '20px' }}>
                         <Box>
                             <FormControl>
                                 <FormLabel ml={4}>Task URL</FormLabel>
                                 <Input
-                                    placeholder='URL'
+                                    placeholder='https://www.upwork.com/jobs/~019fc6aa053ece3ae5'
                                     value={url}
                                     onChange={e => setUrl(e.target.value)}
+                                    readOnly={!type}
                                 />
                             </FormControl>
                             <Flex mt={4}>
                                 <FormControl mr={10}>
                                     <FormLabel ml={4}>Client Name</FormLabel>
                                     <Input
-                                        placeholder='client name'
+                                        placeholder='Client Name'
                                         value={name}
                                         onChange={e => setName(e.target.value)}
+                                        readOnly={!type}
                                     />
                                 </FormControl>
 
                                 <FormControl>
                                     <FormLabel ml={4}>Client Country</FormLabel>
-                                    <Input
-                                        placeholder='Client Country'
-                                        value={country}
-                                        onChange={e => setCountry(e.target.value)}
-                                    />
+                                    <Select
+                                        placeholder='Select Country'
+                                        isReadOnly={!type}
+                                        onChange={e => setCountry(countryList[parseInt(e.target.value)])}
+                                        value={countryList.findIndex((value: any) => { return value === country })}
+                                    >
+                                        {
+                                            countryList.map((row, index) => {
+                                                return <option value={index}>{row}</option>
+                                            })
+                                        }
+                                    </Select>
                                 </FormControl>
                             </Flex>
                             <FormControl mt={4}>
@@ -253,6 +323,7 @@ export default function Default(props: {
                                     type="date"
                                     value={jdate}
                                     onChange={e => setJdate(e.target.value)}
+                                    readOnly={!type}
                                 />
                             </FormControl>
                             <FormControl mt={4}>
@@ -263,16 +334,18 @@ export default function Default(props: {
                                     type="date"
                                     value={bdate}
                                     onChange={e => setBdate(e.target.value)}
+                                    readOnly={!type}
                                 />
                             </FormControl>
                             <FormControl mt={4}>
                                 <FormLabel ml={4}>Proposals</FormLabel>
-                                {/* <NumberInput
-                                    placeholder='Bid Count'
+                                <NumberInput
                                     value={count}
-                                    onChange={e => setCount(e.target.value)}
-                                /> */}
-                                <NumberInput value={count} min={0} max={100}>
+                                    min={0}
+                                    max={100}
+                                    onChange={(value) => setCount(parseInt(value))}
+                                    isReadOnly={!type}
+                                >
                                     <NumberInputField />
                                     <NumberInputStepper>
                                         <NumberIncrementStepper />
@@ -280,16 +353,16 @@ export default function Default(props: {
                                     </NumberInputStepper>
                                 </NumberInput>
                             </FormControl>
-                            <Flex justifyContent={'space-between'} mt="5">
+                            <Flex justifyContent={'space-between'} mt={6}>
                                 <FormControl display={'flex'}>
-                                    <FormLabel ml={4}>Payment</FormLabel>
+                                    <FormLabel ml={4}>Payment Veryfied</FormLabel>
                                     <Switch
                                         isChecked={payment ? true : false}
-                                        onChange={e => setPayment(parseInt(e.target.value))} />
-                                    {/* <Select value={payment} onChange={e => setPayment(parseInt(e.target.value))}>
-                                        <option value='1'>verify</option>
-                                        <option value='0'>none verify</option>
-                                    </Select> */}
+                                        onChange={e => {
+                                            setPayment(parseInt(e.target.value))
+                                        }}
+                                        readOnly={!type}
+                                    />
                                 </FormControl>
                                 {
                                     !type ?
@@ -297,18 +370,25 @@ export default function Default(props: {
                                             <FormLabel ml={4}>Message</FormLabel>
                                             <Switch
                                                 isChecked={messageFlag}
-                                                onChange={() => setMessageFlag(!messageFlag)} />
+                                                onChange={() => {
+                                                    changeMessage()
+                                                }}
+                                            />
                                         </FormControl>
                                         :
                                         null
                                 }
                                 {
-                                    !type && messageFlag ?
+                                    !type ?
                                         <FormControl display={'flex'}>
                                             <FormLabel ml={4}>Hired</FormLabel>
                                             <Switch
                                                 isChecked={hiredFlag}
-                                                onChange={() => setHiredFlag(!hiredFlag)} />
+                                                onChange={() => {
+                                                    changeHired()
+                                                }}
+                                                readOnly={!messageFlag}
+                                            />
                                         </FormControl>
                                         :
                                         null
@@ -321,42 +401,69 @@ export default function Default(props: {
                                     size='sm'
                                     value={content}
                                     onChange={e => setContent(e.target.value)}
+                                    readOnly={!type}
                                 />
                             </FormControl>
+                            {
+                                type ?
+                                    <Flex mt={4} justifyContent={'end'}>
+                                        <Button colorScheme='green' mr={3} onClick={addNewBID} w={'100px'}>
+                                            ADD BID
+                                        </Button>
+                                    </Flex>
+                                    :
+                                    null
+                            }
                         </Box>
-                        <Flex flexDirection={'column'} justifyContent="space-between" height={'100%'}>
-                            <FormControl mt={4}>
-                                <FormLabel ml={4}>Chat History</FormLabel>
-                                <Textarea
-                                    readOnly
-                                    rows="20"
-                                    value={chatContent}
-                                ></Textarea>
-                            </FormControl>
-                            <Box>
-                                <Textarea
-                                    mt={4}
-                                    placeholder='Here is a sample placeholder'
-                                    size='sm'
-                                    value={newChat}
-                                    onChange={e => setNewChat(e.target.value)}
-                                />
-                                <Flex mt={4} justifyContent={'end'}>
-                                    <Button colorScheme='green' mr={3} onClick={addNewChat} w={'100px'}>
-                                        ADD CHAT
-                                    </Button>
+                        {
+                            !type ?
+                                <Flex direction={'column'} justifyContent="space-between" height={'100%'}>
+                                    <FormControl>
+                                        <FormLabel ml={4}>Chat History</FormLabel>
+                                        <Textarea
+                                            readOnly
+                                            rows={22}
+                                            value={chatContent}
+                                        ></Textarea>
+                                    </FormControl>
+                                    <Box>
+                                        <Textarea
+                                            mt={4}
+                                            placeholder='Here is a sample placeholder'
+                                            size='sm'
+                                            value={newChat}
+                                            onChange={e => setNewChat(e.target.value)}
+                                        />
+                                        <Flex mt={4} justifyContent={'end'}>
+                                            <Button colorScheme='green' mr={3} onClick={addNewChat} w={'100px'}>
+                                                ADD CHAT
+                                            </Button>
+                                        </Flex>
+                                    </Box>
                                 </Flex>
-                            </Box>
-                        </Flex>
+                                :
+                                null
+                        }
                     </Grid>
                 </ModalBody>
 
-                {/* <ModalFooter>
-                    <Button colorScheme='green' mr={3} onClick={onClickBtn} w={'100px'}>
-                        {type ? 'ADD' : 'SAVE'}
-                    </Button>
-                    <Button colorScheme='blue' onClick={closeModal} w={'100px'}>Cancel</Button>
-                </ModalFooter> */}
+                <AlertDialog
+                    isOpen={alertFlag}
+                    leastDestructiveRef={cancelRef}
+                    onClose={closeAlert}
+                >
+                    <AlertDialogOverlay>
+                        <AlertDialogContent>
+                            <AlertDialogHeader fontSize='xl' fontWeight='bold' color={'red'}>
+                                {alertTitle}
+                            </AlertDialogHeader>
+
+                            <AlertDialogBody>
+                                {alertContent}
+                            </AlertDialogBody>
+                        </AlertDialogContent>
+                    </AlertDialogOverlay>
+                </AlertDialog>
             </ModalContent>
         </Modal>
     )
