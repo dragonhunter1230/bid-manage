@@ -83,7 +83,7 @@ export const columnsDataComplex: Columns = [
 
 export const columnsDataBID: Columns = [
   {
-    Header: "ClientName",
+    Header: "Client",
     accessor: "client_name",
   },
   {
@@ -99,6 +99,10 @@ export const columnsDataBID: Columns = [
     accessor: "bid_date",
   },
   {
+    Header: "Proposals",
+    accessor: "bid_count",
+  },
+  {
     Header: "Verified",
     accessor: "payment_flag",
   },
@@ -107,7 +111,7 @@ export const columnsDataBID: Columns = [
     accessor: "message_flag",
   },
   {
-    Header: "Finished",
+    Header: "Hired",
     accessor: "finished_flag",
   },
   {

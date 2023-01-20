@@ -23,7 +23,7 @@ import {
 import { TableProps } from 'views/admin/default/variables/columnsData'
 const avatar = "https://scontent.fotp8-1.fna.fbcdn.net/v/t1.6435-9/202074221_101421322193072_8201469573182417214_n.png?_nc_cat=108&ccb=1-5&_nc_sid=09cbfe&_nc_ohc=78fLje1ri2sAX-9M9k1&_nc_ht=scontent.fotp8-1.fna&oh=00_AT-yCcI9whoAZcSaGmJQK53xRa1CldCaj2q5qJlPvDvHRA&oe=626E41FF";
 function TopCreatorTable(props: TableProps) {
-  const { columnsData, tableData, cardTitle, setFilter, setID } = props
+  const { columnsData, tableData, cardTitle, setFilter, setID, selectID } = props
 
   const columns = useMemo(() => columnsData, [columnsData])
   const data = useMemo(() => tableData, [tableData])
@@ -49,7 +49,7 @@ function TopCreatorTable(props: TableProps) {
   initialState.pageSize = 100
 
   const textColor = useColorModeValue('navy.700', 'white')
-  const textColorSecondary = useColorModeValue('secondaryGray.600', 'white')
+  const textColorSecondary = useColorModeValue('blue.500', 'white')
 
   return (
     <>
@@ -97,7 +97,7 @@ function TopCreatorTable(props: TableProps) {
             ))}
           </Thead>
 
-          <Tbody display={'grid'} maxHeight={300} overflow={'auto'}>
+          <Tbody display={'grid'} maxHeight={'69vh'} overflow={'auto'}>
             {page.map((row, index) => {
               prepareRow(row)
               return (
@@ -106,7 +106,7 @@ function TopCreatorTable(props: TableProps) {
                     let data
                     if (cell.column.Header === 'Name') {
                       data = (
-                        <Flex align='center'>
+                        <Flex align='center' bg={cell.row.original.id === selectID ? textColorSecondary : 'transparent'} px={3} py={3} style={{borderRadius: '5px'}}>
                           <Avatar
                             src={avatar}
                             w='30px'
@@ -135,6 +135,7 @@ function TopCreatorTable(props: TableProps) {
                         fontSize={{ sm: '14px' }}
                         minW={{ sm: '150px', md: '200px', lg: 'auto' }}
                         borderColor='transparent'
+                        display={'block'}
                       >
                         {data}
                       </Td>
